@@ -70,7 +70,7 @@ ai-resume-ats/
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/ai-resume-ats.git
+git clone https://github.com/Puneetx21/SmartAts.git
 cd ai-resume-ats
 ````
 
