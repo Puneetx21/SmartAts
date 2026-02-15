@@ -58,34 +58,47 @@ ai-resume-ats/
 
 ## ⚙️ Installation & Setup
 
-### 1️⃣ Clone the Repository
+ 1️⃣ Clone the Repository
 
 ```bash
 git clone https://github.com/yourusername/ai-resume-ats.git
 cd ai-resume-ats
 
-### 2️⃣ Create Virtual Environment
-python -m venv .venv
-.venv\Scripts\activate  # Windows
-
-### 3️⃣ Install Dependencies
-pip install -r requirements.txt
-
-### 4️⃣ Create .env File
-Create a file named .env in root directory:
-API_KEY=your_api_key_here
-
-⚠️ Do NOT upload .env to GitHub.
-
-### 5️⃣ Run the Application
-python app.py
-
-Open:
-http://127.0.0.1:5000/
 
 
+🚀 Future Improvements
+
+Job description auto-scraping
+
+Resume improvement suggestions with AI
+
+Resume formatting feedback
+
+User authentication system
+
+Cloud deployment
+
+👨‍💻 Author
+
+Punit Chauhan
+Final Year B.Tech Computer Science Student
+
+📄 License
+
+This project is developed for educational and demonstration purposes.
+
+
+---
+
+# 🔥 Extra Tip (Make It Stand Out)
 
 Add these badges at the top (optional but professional):
+
+```markdown
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Flask](https://img.shields.io/badge/Flask-Web%20Framework-black)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 
 ```markdown
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
