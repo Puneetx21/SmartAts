@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
-from config import ROLE_CONFIG, UPLOAD_FOLDER, MAX_CONTENT_LENGTH  # ONE import gets everything
+from config import ROLE_CONFIG, UPLOAD_FOLDER, MAX_CONTENT_LENGTH 
 from services.utils import allowed_file, save_upload
 from services.parser import parse_resume
-from services.ats_engine import compute_ats_score  # Remove FRONTEND_ROLE_OPTIONS & ROLE_CONFIG
+from services.ats_engine import compute_ats_score  
 from services.ai_feedback import get_ai_feedback
 
 
