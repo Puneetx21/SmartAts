@@ -64,70 +64,26 @@ ai-resume-ats/
 git clone https://github.com/yourusername/ai-resume-ats.git
 cd ai-resume-ats
 
-2️⃣ Create Virtual Environment
+### 2️⃣ Create Virtual Environment
 python -m venv .venv
 .venv\Scripts\activate  # Windows
 
-3️⃣ Install Dependencies
+### 3️⃣ Install Dependencies
 pip install -r requirements.txt
 
-4️⃣ Create .env File
+### 4️⃣ Create .env File
 Create a file named .env in root directory:
 API_KEY=your_api_key_here
 
 ⚠️ Do NOT upload .env to GitHub.
 
-5️⃣ Run the Application
+### 5️⃣ Run the Application
 python app.py
 
 Open:
 http://127.0.0.1:5000/
 
-📸 Screenshots
-🏠 Home Page
 
-📤 Resume Upload
-
-📊 ATS Analysis Result
-
-🔐 Environment Variables
-
-This project uses environment variables for API security.
-
-Required:
-
-API_KEY
-
-
-Create .env.example file for reference:
-
-API_KEY=your_api_key_here
-
-🚀 Future Improvements
-
-Job description auto-scraping
-
-Resume improvement suggestions with AI
-
-Resume formatting feedback
-
-User authentication system
-
-Cloud deployment
-
-👨‍💻 Author
-
-Punit Chauhan
-Final Year B.Tech Computer Science Student
-
-📄 License
-
-This project is developed for educational and demonstration purposes.
-
-
----
-
-# 🔥 Extra Tip (Make It Stand Out)
 
 Add these badges at the top (optional but professional):
 
