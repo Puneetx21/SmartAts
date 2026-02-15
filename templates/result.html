@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Results for {{ name or "Candidate" }} – {{ role }}</h2>
+
+  <div class="score-section">
+    <h3>ATS Score</h3>
+    <div class="progress-bar">
+      <div class="progress" style="width: {{ ats_score }}%;"></div>
+    </div>
+    <p class="score-label">{{ ats_score }} / 100</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <h3>Keyword match</h3>
+      <p><strong>Coverage:</strong> {{ keyword_match.coverage | round(1) }}%</p>
+      <p><strong>Required present:</strong>
+        {{ keyword_match.required_present | join(", ") or "None" }}
+      </p>
+      <p><strong>Missing required:</strong>
+        {{ keyword_match.required_missing | join(", ") or "None" }}
+      </p>
+      <p><strong>Nice to have present:</strong>
+        {{ keyword_match.nice_present | join(", ") or "None" }}
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Sections & formatting</h3>
+      <p><strong>Sections present:</strong>
+        {{ section_info.present | join(", ") if section_info.present else "Unknown" }}
+      </p>
+      <p><strong>Missing sections:</strong>
+        {{ section_info.missing | join(", ") if section_info.missing else "None" }}
+      </p>
+      <p><strong>Length score:</strong> {{ length_score }}</p>
+      <p><strong>Formatting score:</strong> {{ formatting_score }}</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <h3>Strong areas</h3>
+      <ul>
+        {% for s in strong_areas %}
+        <li>{{ s }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>Weak points</h3>
+      <ul>
+        {% for w in weak_points %}
+        <li>{{ w }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Improvement suggestions</h3>
+    <ul>
+      {% for s in improvement_suggestions %}
+      <li>{{ s }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h3>Template & layout review</h3>
+    <ul>
+      {% for t in template_feedback %}
+      <li>{{ t }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <a href="{{ url_for('home') }}" class="secondary-btn">
+    Analyze another resume
+  </a>
+</section>
+{% endblock %}

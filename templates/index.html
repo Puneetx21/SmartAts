@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Analyze your resume</h2>
+  <p>Select a target role, upload your PDF resume, and get an ATS score with AI feedback.</p>
+
+  <form id="uploadForm" action="{{ url_for('analyze') }}"
+        method="POST" enctype="multipart/form-data">
+
+    <label for="role">Target role</label>
+    <select id="role" name="role" required>
+      <option value="">-- Choose a role --</option>
+      {% for r in roles %}
+      <option value="{{ r }}">{{ r }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="resume">Resume (PDF only)</label>
+    <div id="dropZone" class="drop-zone">
+      <p id="dropText">Drag & drop your PDF here or click to select</p>
+      <input type="file" id="resume" name="resume" accept=".pdf" hidden required>
+    </div>
+    <p id="fileName" class="file-name"></p>
+
+    <button type="submit" id="submitBtn" class="primary-btn">
+      Analyze Resume
+    </button>
+
+    <div id="loader" class="loader hidden">
+      <div class="spinner"></div>
+      <p>Analyzing your resume. This may take a few seconds...</p>
+    </div>
+  </form>
+</section>
+{% endblock %}
