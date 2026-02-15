@@ -14,6 +14,7 @@ This system helps job seekers optimize their resumes according to job descriptio
 ## 🌟 Features
 
 - 📄 Resume Upload (PDF Support)
+- 📄 Drag and Drop feature for uploading
 - 🧠 NLP-Based Resume Parsing
 - 🎯 ATS Score Calculation
 - 🔍 Keyword Matching with Job Description
@@ -114,15 +115,12 @@ http://127.0.0.1:5000/
 
 ### 🏠 Home Page
 
-![Home Page](docs/home.png)
-
-### 📤 Resume Upload Page
-
-![Upload Page](docs/upload.png)
+<img width="1791" height="767" alt="image" src="https://github.com/user-attachments/assets/f0d76e96-f7e8-46dc-b97f-2f38f82cd164" />
 
 ### 📊 ATS Result Dashboard
 
-![Result Page](docs/result.png)
+<img width="1142" height="865" alt="image" src="https://github.com/user-attachments/assets/64566bea-02ea-442b-8f24-b766a5c27586" />
+
 
 ---
 
