@@ -1,21 +1,4 @@
-Perfect 👍 I’ll give you a **clean, properly formatted, professional README** that looks premium on GitHub and is recruiter-friendly.
 
-This version has:
-
-* Clean section spacing
-* Proper headings
-* Badges
-* Clear formatting
-* Screenshot alignment
-* No messy spacing
-
-Just copy this directly into your `README.md`.
-
----
-
-# ✅ Clean & Professional README
-
-```markdown
 # 🚀 AI Resume ATS – Smart Resume Analyzer
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
@@ -173,30 +156,5 @@ Aspiring Software Engineer
 
 This project is developed for academic and demonstration purposes.
 
-```
-
----
-
-# 🔥 Why This Version Is Better
-
-✔ Clean spacing  
-✔ Proper code blocks  
-✔ Section separation  
-✔ Professional structure  
-✔ Recruiter-friendly  
-✔ No broken formatting  
-
----
-
-If you want, I can now:
-
-- 🎨 Make a **modern styled README with GIF preview**
-- 🏆 Optimize it for **placements (₹20 LPA target profile)**
-- 📊 Add architecture diagram
-- 🌍 Add deployment section for Render
-
-Tell me what style you want:
-Simple | Premium | Animated | Placement-focused 🚀
-```
 
 
