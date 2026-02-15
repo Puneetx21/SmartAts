@@ -119,8 +119,7 @@ http://127.0.0.1:5000/
 
 ### 📊 ATS Result Dashboard
 
-<img width="1142" height="865" alt="image" src="https://github.com/user-attachments/assets/64566bea-02ea-442b-8f24-b766a5c27586" />
-
+<img width="1062" height="862" alt="image" src="https://github.com/user-attachments/assets/fa7223a5-0d96-4789-883c-b6406b92ce3d" />
 
 ---
 
