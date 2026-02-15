@@ -71,7 +71,7 @@ ai-resume-ats/
 
 ```bash
 git clone https://github.com/Puneetx21/SmartAts.git
-cd ai-resume-ats
+cd SmartAts
 ````
 
 ### 2️⃣ Create Virtual Environment
