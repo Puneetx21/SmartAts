@@ -2,7 +2,14 @@
 
 SmartATS is a Flask web app that analyzes PDF resumes against role-specific ATS criteria and generates actionable feedback **without any external AI/API calls**.
 
-It is fully local, rule-based, and now supports **PDF export of the analysis report**.
+It is fully local, rule-based, and supports **PDF export of the analysis report**.😊
+
+## Project Overview 
+<img width="1347" height="863" alt="image" src="https://github.com/user-attachments/assets/e88b6256-0044-4871-973a-7c49b5c45c68" />
+## Report Overview
+<img width="900" height="808" alt="image" src="https://github.com/user-attachments/assets/f8f3eb75-77b7-482c-ba33-afd1d27643f5" />
+
+
 
 ## Features
 
@@ -57,7 +64,7 @@ reportlab>=4.0.0
 
 ## No `.env` Needed
 
-This project is now fully logic-based and **does not require `.env`**.
+This project is fully logic-based and **does not require `.env`**.
 
 - No API keys
 - No OpenAI/third-party AI integrations
