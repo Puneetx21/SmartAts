@@ -6,10 +6,6 @@ It is fully local, rule-based, and supports **PDF export of the analysis report*
 
 ## Project Overview 
 <img width="1347" height="863" alt="image" src="https://github.com/user-attachments/assets/e88b6256-0044-4871-973a-7c49b5c45c68" />
-## Report Overview
-<img width="900" height="808" alt="image" src="https://github.com/user-attachments/assets/f8f3eb75-77b7-482c-ba33-afd1d27643f5" />
-
-
 
 ## Features
 
