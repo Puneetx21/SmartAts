@@ -1,0 +1,118 @@
+/* ============ Circular Progress Component ============ */
+
+.circular-progress-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.circular-progress-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto;
+}
+
+.circular-progress-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circular-progress-circle {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.circular-progress-bg {
+  stroke: var(--progress-bg);
+  stroke-width: 8;
+}
+
+.circular-progress-fill {
+  stroke: url(#scoreGradient);
+  stroke-width: 8;
+  transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.circular-progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.circular-progress-number {
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--info));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  line-height: 1;
+}
+
+.circular-progress-label {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+/* Status indicator next to score */
+.score-status {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  animation: slideUp 0.6s ease-out;
+}
+
+.score-status.excellent {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.score-status.very-good {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+}
+
+.score-status.good {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: white;
+}
+
+.score-status.fair {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.score-status.needs-work {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.score-status.critical {
+  background: linear-gradient(135deg, #f43f5e, #be123c);
+  color: white;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

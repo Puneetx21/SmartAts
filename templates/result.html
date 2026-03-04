@@ -1,84 +1,254 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="card">
-  <h2>Results for {{ name or "Candidate" }} – {{ role }}</h2>
+  <div class="result-header">
+    <div>
+      <h2>📊 Resume Analysis Results</h2>
+      <p class="role-badge">{{ role }}</p>
+    </div>
+  </div>
 
+  <!-- Main Score Section with Circular Progress -->
   <div class="score-section">
-    <h3>ATS Score</h3>
-    <div class="progress-bar">
-      <div class="progress" style="width: {{ ats_score }}%;"></div>
+    <h3>Overall ATS Score</h3>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; flex-wrap: wrap; margin: 2rem 0;">
+      <!-- Circular Progress SVG -->
+      <div class="circular-progress-group">
+        <div class="circular-progress-wrapper">
+          <svg class="circular-progress-svg" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                {% if ats_score >= 85 %}
+                  <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+                {% elif ats_score >= 70 %}
+                  <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+                {% elif ats_score >= 55 %}
+                  <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+                {% else %}
+                  <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1" />
+                {% endif %}
+              </linearGradient>
+            </defs>
+            <circle class="circular-progress-circle circular-progress-bg" r="45" cx="50" cy="50"></circle>
+            <circle class="circular-progress-circle circular-progress-fill" r="45" cx="50" cy="50"
+              style="stroke-dasharray: {% set circumference = 45 * 2 * 3.14159 %}{{ circumference }};
+                     stroke-dashoffset: {{ circumference * (1 - ats_score / 100) }};"></circle>
+          </svg>
+          <div class="circular-progress-text">
+            <p class="circular-progress-number">{{ ats_score }}</p>
+            <p class="circular-progress-label">Score</p>
+          </div>
+        </div>
+        <span class="score-status {% if ats_score >= 85 %}excellent{% elif ats_score >= 70 %}very-good{% elif ats_score >= 55 %}good{% elif ats_score >= 40 %}fair{% elif ats_score >= 25 %}needs-work{% else %}critical{% endif %}">
+          {% if ats_score >= 85 %}
+            🌟 EXCELLENT
+          {% elif ats_score >= 70 %}
+            ✅ VERY GOOD
+          {% elif ats_score >= 55 %}
+            👍 GOOD
+          {% elif ats_score >= 40 %}
+            ➡️ FAIR
+          {% elif ats_score >= 25 %}
+            ⚠️ NEEDS WORK
+          {% else %}
+            🔴 CRITICAL
+          {% endif %}
+        </span>
+      </div>
+
+      <!-- Score Interpretation Box -->
+      <div style="flex: 1; min-width: 250px; padding: 2rem; background: rgba(99, 102, 241, 0.1); border-radius: 16px; border: 2px solid var(--accent);">
+        <h4 style="margin-top: 0; font-size: 1.3rem; margin-bottom: 1rem;">{{ score_explanation or "Analysis Complete" }}</h4>
+        <p style="margin: 0; font-size: 1.1rem; color: var(--muted);">
+          {% if ats_score >= 80 %}
+            Your resume demonstrates excellent ATS optimization with strong keyword coverage, well-organized sections, and professional formatting. You're well-positioned for automated screening systems.
+          {% elif ats_score >= 65 %}
+            Your resume is well-optimized for ATS systems and should pass through automated screening. Consider implementing the suggestions below to increase your score further.
+          {% elif ats_score >= 50 %}
+            Your resume needs improvements to pass through ATS systems more reliably. Focus on the priority areas below to increase your chances.
+          {% else %}
+            Your resume requires significant optimization to succeed with ATS systems. Start with the Priority 1 suggestions for the biggest impact.
+          {% endif %}
+        </p>
+      </div>
     </div>
-    <p class="score-label">{{ ats_score }} / 100</p>
   </div>
 
+  <!-- Supporting Metrics Grid with Mini Circular Indicators -->
+  <h3 style="margin-top: 2.5rem; margin-bottom: 1.5rem; text-align: center;">📈 Key Metrics Breakdown</h3>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <h4>💼 Experience</h4>
+      <p class="metric-value">{{ experience_level.level }}</p>
+      <p class="metric-desc">{{ experience_level.description }}</p>
+    </div>
+    <div class="metric-card">
+      <h4>🔑 Keywords</h4>
+      <p class="metric-value">{{ keyword_match.coverage | round(1) }}%</p>
+      <p class="metric-desc">Required: {{ keyword_match.required_coverage | round(1) }}%</p>
+    </div>
+    <div class="metric-card">
+      <h4>✅ Completeness</h4>
+      <p class="metric-value">{{ (section_info.completeness | round(1)) }}%</p>
+      <p class="metric-desc">{{ section_info.present | length }}/4 sections</p>
+    </div>
+    <div class="metric-card">
+      <h4>🛠️ Technical Depth</h4>
+      <p class="metric-value">{{ technical_depth_score }}/100</p>
+      <p class="metric-desc">Skills Coverage Quality</p>
+    </div>
+    <div class="metric-card">
+      <h4>💪 Action Verbs</h4>
+      <p class="metric-value">{{ action_verb_score }}/100</p>
+      <p class="metric-desc">Verb Diversity & Frequency</p>
+    </div>
+    <div class="metric-card">
+      <h4>🎯 Consistency</h4>
+      <p class="metric-value">{{ consistency_score }}/100</p>
+      <p class="metric-desc">Professional Formatting</p>
+    </div>
+  </div>
+
+  <!-- Detailed Analysis Grid -->
+  <h3 style="margin-top: 2.5rem; margin-bottom: 1.5rem; text-align: center;">🔍 Detailed Analysis</h3>
   <div class="grid-2">
     <div class="panel">
-      <h3>Keyword match</h3>
-      <p><strong>Coverage:</strong> {{ keyword_match.coverage | round(1) }}%</p>
-      <p><strong>Required present:</strong>
-        {{ keyword_match.required_present | join(", ") or "None" }}
-      </p>
-      <p><strong>Missing required:</strong>
-        {{ keyword_match.required_missing | join(", ") or "None" }}
-      </p>
-      <p><strong>Nice to have present:</strong>
-        {{ keyword_match.nice_present | join(", ") or "None" }}
-      </p>
+      <h3>🔑 Keyword Analysis</h3>
+      <div class="skill-section">
+        <h4>✅ Required Skills Present ({{ keyword_match.required_present | length }})</h4>
+        <div class="skill-tags">
+          {% if keyword_match.required_present %}
+            {% for skill in keyword_match.required_present[:8] %}
+            <span class="skill-tag success">{{ skill }}</span>
+            {% endfor %}
+            {% if keyword_match.required_present | length > 8 %}
+            <span class="skill-tag success">+{{ keyword_match.required_present | length - 8 }}</span>
+            {% endif %}
+          {% else %}
+            <span class="text-muted">None found - add more keywords</span>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="skill-section">
+        <h4>❌ Missing Required Skills ({{ keyword_match.required_missing | length }})</h4>
+        <div class="skill-tags">
+          {% if keyword_match.required_missing %}
+            {% for skill in keyword_match.required_missing[:5] %}
+            <span class="skill-tag danger">{{ skill }}</span>
+            {% endfor %}
+            {% if keyword_match.required_missing | length > 5 %}
+            <span class="skill-tag danger">+{{ keyword_match.required_missing | length - 5 }} more</span>
+            {% endif %}
+          {% else %}
+            <span class="text-muted">All required skills present!</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="skill-section">
+        <h4>⭐ Nice-to-Have Skills ({{ keyword_match.nice_present | length }})</h4>
+        <div class="skill-tags">
+          {% if keyword_match.nice_present %}
+            {% for skill in keyword_match.nice_present[:8] %}
+            <span class="skill-tag info">{{ skill }}</span>
+            {% endfor %}
+            {% if keyword_match.nice_present | length > 8 %}
+            <span class="skill-tag info">+{{ keyword_match.nice_present | length - 8 }} more</span>
+            {% endif %}
+          {% else %}
+            <span class="text-muted">No nice-to-have skills found</span>
+          {% endif %}
+        </div>
+      </div>
     </div>
 
     <div class="panel">
-      <h3>Sections & formatting</h3>
-      <p><strong>Sections present:</strong>
-        {{ section_info.present | join(", ") if section_info.present else "Unknown" }}
-      </p>
-      <p><strong>Missing sections:</strong>
-        {{ section_info.missing | join(", ") if section_info.missing else "None" }}
-      </p>
-      <p><strong>Length score:</strong> {{ length_score }}</p>
-      <p><strong>Formatting score:</strong> {{ formatting_score }}</p>
+      <h3>📋 Formatting & Content</h3>
+      <div class="metric-row">
+        <span>📏 Length Score</span>
+        <span class="metric-badge">{{ length_score }}/100</span>
+      </div>
+      <div class="metric-row">
+        <span>🎨 Formatting Style</span>
+        <span class="metric-badge">{{ formatting_score }}/100</span>
+      </div>
+      <div class="metric-row">
+        <span>💬 Action Verbs Quality</span>
+        <span class="metric-badge">{{ action_verb_score }}/100</span>
+      </div>
+      
+      <h4 style="margin-top: 1.5rem;">✓ Sections Present</h4>
+      <ul class="section-list">
+        {% for section in section_info.present %}
+        <li>✓ {{ section | title }}</li>
+        {% endfor %}
+      </ul>
+
+      {% if section_info.missing %}
+      <h4 style="margin-top: 1.5rem;">✗ Missing Sections</h4>
+      <ul class="section-list missing">
+        {% for section in section_info.missing %}
+        <li>✗ {{ section | title }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
     </div>
   </div>
 
-  <div class="grid-2">
-    <div class="panel">
-      <h3>Strong areas</h3>
-      <ul>
-        {% for s in strong_areas %}
-        <li>{{ s }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-
-    <div class="panel">
-      <h3>Weak points</h3>
-      <ul>
-        {% for w in weak_points %}
-        <li>{{ w }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-  <div class="panel">
-    <h3>Improvement suggestions</h3>
-    <ul>
-      {% for s in improvement_suggestions %}
-      <li>{{ s }}</li>
+  <!-- Strong Areas -->
+  <div class="panel panel-success" style="margin-top: 2.5rem;">
+    <h3>💪 Strong Areas</h3>
+    <ul class="feedback-list">
+      {% for area in strong_areas %}
+      <li>{{ area }}</li>
       {% endfor %}
     </ul>
   </div>
 
-  <div class="panel">
-    <h3>Template & layout review</h3>
-    <ul>
-      {% for t in template_feedback %}
-      <li>{{ t }}</li>
+  <!-- Weak Points -->
+  {% if weak_points %}
+  <div class="panel panel-warning">
+    <h3>⚠️ Areas for Improvement</h3>
+    <ul class="feedback-list warning">
+      {% for point in weak_points %}
+      <li>{{ point }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- Improvement Suggestions -->
+  <div class="panel panel-info">
+    <h3>🎯 Prioritized Improvement Suggestions</h3>
+    <ul class="feedback-list">
+      {% for suggestion in improvement_suggestions %}
+      <li>{{ suggestion }}</li>
       {% endfor %}
     </ul>
   </div>
 
-  <a href="{{ url_for('home') }}" class="secondary-btn">
-    Analyze another resume
-  </a>
+  <!-- Template & Layout Review -->
+  <div class="panel">
+    <h3>📋 Resume Format Best Practices</h3>
+    <ul class="feedback-list">
+      {% for item in template_feedback %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="action-buttons">
+    <a href="{{ url_for('download_report', report_id=report_id) }}" class="secondary-btn">
+      📄 Download PDF Report
+    </a>
+    <a href="{{ url_for('home') }}" class="primary-btn">
+      📤 Analyze Another Resume
+    </a>
+  </div>
 </section>
 {% endblock %}

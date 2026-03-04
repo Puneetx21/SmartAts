@@ -1,4 +1,4 @@
-import fitz  # PyMuPDF[web:29]
+import fitz  # PyMuPDF
 import re
 
 SECTION_HEADERS = [
@@ -41,7 +41,19 @@ def split_sections(text: str) -> dict:
             continue
         sections.setdefault(current, []).append(clean)
 
-    return {k: "\n".join(v).strip() for k, v in sections.items()}
+    # Normalize "technical skills" to "skills"
+    final_sections = {}
+    for key, value in sections.items():
+        if key == "technical skills":
+            # Merge with skills if it exists
+            if "skills" in final_sections:
+                final_sections["skills"] = final_sections["skills"] + "\n" + "\n".join(value)
+            else:
+                final_sections["skills"] = "\n".join(value)
+        else:
+            final_sections[key] = "\n".join(value).strip()
+    
+    return final_sections
 
 def extract_name(text: str) -> str:
     for line in text.splitlines():
@@ -61,11 +73,7 @@ def parse_resume(filepath: str) -> dict:
     sections = split_sections(full_text)
 
     name = extract_name(full_text)
-    skills_text = (
-        sections.get("skills") or
-        sections.get("technical skills") or
-        ""
-    )
+    skills_text = sections.get("skills", "")  # Normalized to "skills"
     skills = extract_skills(skills_text)
 
     return {

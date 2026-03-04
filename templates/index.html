@@ -1,35 +1,134 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="card">
-  <h2>Analyze your resume</h2>
-  <p>Select a target role, upload your PDF resume, and get an ATS score with AI feedback.</p>
+<section class="card fade-in">
+  <!-- Hero Section -->
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+      🎯 AI-Powered Resume ATS Analyzer
+    </h2>
+    <p style="font-size: 1.3rem; color: var(--muted); max-width: 700px; margin: 0 auto; line-height: 1.6;">
+      Beat the ATS system! Get instant feedback on your resume with our advanced analysis engine. Find gaps, optimize keywords, and land more interviews.
+    </p>
+  </div>
 
-  <form id="uploadForm" action="{{ url_for('analyze') }}"
-        method="POST" enctype="multipart/form-data">
+  <!-- Upload Form -->
+  <form id="uploadForm" action="{{ url_for('analyze') }}" method="POST" enctype="multipart/form-data" style="margin-bottom: 2rem;">
 
-    <label for="role">Target role</label>
+    <label for="role">🎓 Select Your Target Role</label>
     <select id="role" name="role" required>
-      <option value="">-- Choose a role --</option>
+      <option value="">-- Choose your target role --</option>
       {% for r in roles %}
       <option value="{{ r }}">{{ r }}</option>
       {% endfor %}
     </select>
 
-    <label for="resume">Resume (PDF only)</label>
+    <label for="resume">📄 Upload Your Resume (PDF Format)</label>
     <div id="dropZone" class="drop-zone">
       <p id="dropText">Drag & drop your PDF here or click to select</p>
+      <small>Maximum file size: 10MB | PDF format only</small>
       <input type="file" id="resume" name="resume" accept=".pdf" hidden required>
     </div>
     <p id="fileName" class="file-name"></p>
 
-    <button type="submit" id="submitBtn" class="primary-btn">
-      Analyze Resume
+    <button type="submit" id="submitBtn" class="primary-btn" style="width: 100%; font-size: 1.2rem; padding: 1.2rem 2rem;">
+      🚀 Analyze My Resume Now
     </button>
 
-    <div id="loader" class="loader hidden">
+    <div id="loader" class="loader hidden" style="justify-content: center;">
       <div class="spinner"></div>
-      <p>Analyzing your resume. This may take a few seconds...</p>
+      <p>Analyzing your resume...</p>
     </div>
   </form>
+
+  <!-- Features Grid -->
+  <div style="margin-top: 3rem; padding-top: 2.5rem; border-top: 2px solid var(--accent);">
+    <h3 style="text-align: center; margin-bottom: 2rem; font-size: 2rem;">✨ What You'll Get</h3>
+    <div class="metrics-grid">
+      <div class="metric-card" style="text-align: left;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🎯</div>
+        <h4 style="margin-bottom: 0.75rem; color: var(--text);">ATS Score Analysis</h4>
+        <p style="color: var(--muted); font-size: 1rem; margin: 0;">Get a comprehensive 0-100 score showing how well your resume performs with automated systems</p>
+      </div>
+      
+      <div class="metric-card" style="text-align: left;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔍</div>
+        <h4 style="margin-bottom: 0.75rem; color: var(--text);">Keyword Analysis</h4>
+        <p style="color: var(--muted); font-size: 1rem; margin: 0;">Identify missing required skills and optimize your resume with the right keywords</p>
+      </div>
+
+      <div class="metric-card" style="text-align: left;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📊</div>
+        <h4 style="margin-bottom: 0.75rem; color: var(--text);">Detailed Metrics</h4>
+        <p style="color: var(--muted); font-size: 1rem; margin: 0;">Track experience level, technical depth, action verbs, and section completeness</p>
+      </div>
+
+      <div class="metric-card" style="text-align: left;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">💡</div>
+        <h4 style="margin-bottom: 0.75rem; color: var(--text);">Actionable Feedback</h4>
+        <p style="color: var(--muted); font-size: 1rem; margin: 0;">Receive prioritized suggestions tailored to your experience level and target role</p>
+      </div>
+
+      <div class="metric-card" style="text-align: left;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⚡</div>
+        <h4 style="margin-bottom: 0.75rem; color: var(--text);">Instant Results</h4>
+        <p style="color: var(--muted); font-size: 1rem; margin: 0;">No waiting! Get your complete analysis in seconds, not hours or days</p>
+      </div>
+
+      <div class="metric-card" style="text-align: left;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔒</div>
+        <h4 style="margin-bottom: 0.75rem; color: var(--text);">100% Private</h4>
+        <p style="color: var(--muted); font-size: 1rem; margin: 0;">Your resume is analyzed locally and never stored or sent to third parties</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <div style="margin-top: 3rem; padding: 2.5rem; background: linear-gradient(135deg, var(--accent-soft), rgba(139, 92, 246, 0.08)); border-radius: 16px; border: 2px solid var(--accent);">
+    <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem;">📋 How It Works</h3>
+    <div style="display: grid; gap: 1.5rem; max-width: 600px; margin: 0 auto;">
+      <div style="display: flex; gap: 1.5rem; align-items: start;">
+        <div style="flex-shrink: 0; width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), var(--accent-bright)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.1rem;">1</div>
+        <div>
+          <h4 style="margin: 0 0 0.5rem 0;">Select Your Target Role</h4>
+          <p style="margin: 0; color: var(--muted);">Choose from 20+ tech roles including Software Engineer, Data Scientist, DevOps, and more</p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 1.5rem; align-items: start;">
+        <div style="flex-shrink: 0; width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), var(--accent-bright)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.1rem;">2</div>
+        <div>
+          <h4 style="margin: 0 0 0.5rem 0;">Upload Your PDF Resume</h4>
+          <p style="margin: 0; color: var(--muted);">Simply drag and drop or select your resume file - PDF format only</p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 1.5rem; align-items: start;">
+        <div style="flex-shrink: 0; width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), var(--accent-bright)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.1rem;">3</div>
+        <div>
+          <h4 style="margin: 0 0 0.5rem 0;">Get Your Detailed Report</h4>
+          <p style="margin: 0; color: var(--muted);">Receive instant analysis with ATS score, missing keywords, and prioritized improvement tips</p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 1.5rem; align-items: start;">
+        <div style="flex-shrink: 0; width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), var(--accent-bright)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.1rem;">4</div>
+        <div>
+          <h4 style="margin: 0 0 0.5rem 0;">Optimize & Resubmit</h4>
+          <p style="margin: 0; color: var(--muted);">Make improvements based on feedback and re-analyze to track your progress</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div style="margin-top: 3rem; text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1)); border-radius: 16px; border: 2px solid var(--success);">
+    <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">🚀 Ready to Optimize Your Resume?</h3>
+    <p style="font-size: 1.2rem; color: var(--muted); margin-bottom: 1.5rem;">
+      Join thousands of candidates who have improved their ATS scores and landed more interviews
+    </p>
+    <button onclick="document.getElementById('role').scrollIntoView({ behavior: 'smooth' })" class="primary-btn" style="font-size: 1.2rem; padding: 1.2rem 2.5rem;">
+      ⬆️ Start Your Analysis
+    </button>
+  </div>
 </section>
 {% endblock %}
