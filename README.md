@@ -3,6 +3,12 @@
 SmartATS is a Flask web app that analyzes PDF resumes against role-specific ATS criteria and generates actionable feedback **without any external AI/API calls**.
 
 It is fully local, rule-based, and supports **PDF export of the analysis report**.😊
+## 🚀 Tech Stack
+
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-Web%20Framework-black?logo=flask&logoColor=white)
+![PyMuPDF](https://img.shields.io/badge/PyMuPDF-Resume%20Parser-orange)
+![ReportLab](https://img.shields.io/badge/ReportLab-PDF%20Generator-red)
 
 ## Project Overview 
 <img width="1347" height="863" alt="image" src="https://github.com/user-attachments/assets/e88b6256-0044-4871-973a-7c49b5c45c68" />
@@ -18,13 +24,6 @@ It is fully local, rule-based, and supports **PDF export of the analysis report*
 - Prioritized improvement suggestions
 - Responsive UI with dark/light theme
 - Downloadable analysis report in PDF format
-
-## Tech Stack
-
-- Python 3.8+
-- Flask
-- PyMuPDF (`pymupdf`) for resume text extraction
-- ReportLab (`reportlab`) for PDF report generation
 
 ## Installation
 
