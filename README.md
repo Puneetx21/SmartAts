@@ -133,6 +133,33 @@ smartats/
 - Keep uploads/logs out of version control as needed.
 - For production, set `debug=False` and run behind a proper WSGI server.
 
+## 🚀 Deployment to Vercel
+
+SmartATS is fully compatible with Vercel's serverless platform:
+
+### Quick Deploy
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy
+vercel --prod
+```
+
+### What's Vercel-Ready?
+✅ **In-memory PDF generation** - No file writes needed  
+✅ **Automatic file cleanup** - Uploads deleted after processing  
+✅ **Serverless configuration** - `vercel.json` included  
+✅ **/tmp storage** - Compatible with Vercel's ephemeral filesystem  
+
+### Important Notes for Vercel:
+- PDF downloads work via in-memory BytesIO (no disk writes)
+- Report cache is per-instance (acceptable for this use case)
+- Uploaded files auto-deleted after parsing to save /tmp space
+- Free tier supports ~1,200 analyses/month
+
+**For detailed deployment instructions, troubleshooting, and optimization tips, see [DEPLOYMENT.md](DEPLOYMENT.md)**
+
 ## Troubleshooting
 
 - If activation is blocked in PowerShell, run: `Set-ExecutionPolicy -Scope Process Bypass`

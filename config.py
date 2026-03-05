@@ -2,17 +2,19 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
-# MAX_CONTENT_LENGTH = 5 * 1024 * 1024
-# ALLOWED_EXTENSIONS = {"pdf"}
-# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-import os
-
+# Configuration for Vercel deployment
+# /tmp is the only writable directory in Vercel serverless functions
 UPLOAD_FOLDER = "/tmp/uploads"
-MAX_CONTENT_LENGTH = 5 * 1024 * 1024
+MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB limit
 ALLOWED_EXTENSIONS = {"pdf"}
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Ensure upload directory exists (critical for Vercel)
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except Exception as e:
+    print(f"Warning: Could not create upload folder: {e}")
+    # Fallback to /tmp if /tmp/uploads fails
+    UPLOAD_FOLDER = "/tmp"
 
 # COMPLETE TECH ROLES CONFIGURATION (20+ roles)
 ROLE_CONFIG = {

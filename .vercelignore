@@ -1,0 +1,19 @@
+# Vercel ignore patterns
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv
+venv/
+ENV/
+env/
+.env
+.vscode/
+.idea/
+*.log
+uploads/
+.DS_Store
+*.swp
+*.swo
+*~

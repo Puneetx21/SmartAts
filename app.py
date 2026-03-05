@@ -1,3 +1,4 @@
+import os
 from collections import OrderedDict
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -94,35 +95,47 @@ def analyze():
     if not allowed_file(file.filename):
         return "Only PDF files are allowed", 400
 
-    filepath = save_upload(file)
+    filepath = None
+    try:
+        filepath = save_upload(file)
+        parsed = parse_resume(filepath)
+        ats_details = compute_ats_score(parsed, role_key)
+        feedback = generate_feedback(role_label, parsed, ats_details)
+        report_data = _build_report_data(role_label, parsed, ats_details, feedback)
+        report_id = _store_report_data(report_data)
 
-    parsed = parse_resume(filepath)
-    ats_details = compute_ats_score(parsed, role_key)
-    feedback = generate_feedback(role_label, parsed, ats_details)
-    report_data = _build_report_data(role_label, parsed, ats_details, feedback)
-    report_id = _store_report_data(report_data)
-
-    return render_template(
-        "result.html",
-        report_id=report_id,
-        role=role_label,
-        role_config=ROLE_CONFIG[role_key],
-        name=parsed["name"],
-        ats_score=ats_details["ats_score"],
-        keyword_match=ats_details["keyword_match"],
-        section_info=ats_details["sections"],
-        length_score=ats_details["length_score"],
-        formatting_score=ats_details["formatting_score"],
-        action_verb_score=ats_details["action_verb_score"],
-        technical_depth_score=ats_details["technical_depth_score"],
-        consistency_score=ats_details["consistency_score"],
-        experience_level=ats_details["experience_level"],
-        strong_areas=feedback["strong_areas"],
-        weak_points=feedback["weak_points"],
-        improvement_suggestions=feedback["improvement_suggestions"],
-        template_feedback=feedback["template_feedback"],
-        score_explanation=feedback["score_explanation"],
-    )
+        return render_template(
+            "result.html",
+            report_id=report_id,
+            role=role_label,
+            role_config=ROLE_CONFIG[role_key],
+            name=parsed["name"],
+            ats_score=ats_details["ats_score"],
+            keyword_match=ats_details["keyword_match"],
+            section_info=ats_details["sections"],
+            length_score=ats_details["length_score"],
+            formatting_score=ats_details["formatting_score"],
+            action_verb_score=ats_details["action_verb_score"],
+            technical_depth_score=ats_details["technical_depth_score"],
+            consistency_score=ats_details["consistency_score"],
+            experience_level=ats_details["experience_level"],
+            strong_areas=feedback["strong_areas"],
+            weak_points=feedback["weak_points"],
+            improvement_suggestions=feedback["improvement_suggestions"],
+            template_feedback=feedback["template_feedback"],
+            score_explanation=feedback["score_explanation"],
+        )
+    except Exception as e:
+        print(f"Error analyzing resume: {str(e)}")
+        return f"Error analyzing resume: {str(e)}", 500
+    finally:
+        # Clean up uploaded file to save /tmp space on Vercel
+        if filepath:
+            try:
+                if os.path.exists(filepath):
+                    os.remove(filepath)
+            except Exception as cleanup_error:
+                print(f"Warning: Could not delete temp file {filepath}: {cleanup_error}")
 
 
 @app.route("/download-report/<report_id>", methods=["GET"])
@@ -130,20 +143,28 @@ def download_report(report_id):
     _cleanup_expired_reports()
     cache_item = report_cache.get(report_id)
     if not cache_item:
-        return abort(404, description="Report not found. Please re-analyze your resume.")
+        return abort(404, description="Report not found or expired. Please re-analyze your resume.")
 
     report_data = cache_item["report_data"]
 
-    pdf_bytes = generate_report_pdf(report_data)
-    candidate_name = (report_data.get("name") or "candidate").replace(" ", "_")
-    filename = f"smartats_report_{candidate_name}.pdf"
+    try:
+        pdf_bytes = generate_report_pdf(report_data)
+        candidate_name = (report_data.get("name") or "candidate").replace(" ", "_")
+        filename = f"smartats_report_{candidate_name}.pdf"
 
-    return send_file(
-        BytesIO(pdf_bytes),
-        mimetype="application/pdf",
-        as_attachment=True,
-        download_name=filename,
-    )
+        # Create BytesIO object from bytes
+        pdf_buffer = BytesIO(pdf_bytes)
+        pdf_buffer.seek(0)  # Reset pointer to beginning
+        
+        return send_file(
+            pdf_buffer,
+            mimetype="application/pdf",
+            as_attachment=True,
+            download_name=filename,
+        )
+    except Exception as e:
+        print(f"Error generating PDF: {str(e)}")
+        return abort(500, description=f"Error generating PDF report: {str(e)}")
 
 
 if __name__ == "__main__":
