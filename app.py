@@ -2,9 +2,11 @@ import os
 from collections import OrderedDict
 from datetime import datetime, timedelta
 from io import BytesIO
+from typing import Optional
 from uuid import uuid4
 
 from flask import Flask, render_template, request, send_file, abort
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from config import ROLE_CONFIG, UPLOAD_FOLDER, MAX_CONTENT_LENGTH
 from services.utils import allowed_file, save_upload
 from services.parser import parse_resume
@@ -16,10 +18,12 @@ from services.report_pdf import generate_report_pdf
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "smartats-dev-secret-change-in-prod")
 
 REPORT_CACHE_MAX_ITEMS = 100
 REPORT_CACHE_TTL_MINUTES = 30
 report_cache = OrderedDict()
+report_token_serializer = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
 
 def _cleanup_expired_reports() -> None:
@@ -68,6 +72,21 @@ def _build_report_data(role_label: str, parsed: dict, ats_details: dict, feedbac
         "score_explanation": feedback["score_explanation"],
     }
 
+
+def _create_report_token(report_data: dict) -> str:
+    return report_token_serializer.dumps(report_data, salt="report-download")
+
+
+def _read_report_token(token: str, max_age_seconds: int) -> Optional[dict]:
+    try:
+        return report_token_serializer.loads(
+            token,
+            salt="report-download",
+            max_age=max_age_seconds,
+        )
+    except (BadSignature, SignatureExpired):
+        return None
+
 @app.route("/", methods=["GET"])
 def home():
     roles = [role["label"] for role in ROLE_CONFIG.values()]
@@ -103,10 +122,12 @@ def analyze():
         feedback = generate_feedback(role_label, parsed, ats_details)
         report_data = _build_report_data(role_label, parsed, ats_details, feedback)
         report_id = _store_report_data(report_data)
+        report_token = _create_report_token(report_data)
 
         return render_template(
             "result.html",
             report_id=report_id,
+            report_token=report_token,
             role=role_label,
             role_config=ROLE_CONFIG[role_key],
             name=parsed["name"],
@@ -138,14 +159,18 @@ def analyze():
                 print(f"Warning: Could not delete temp file {filepath}: {cleanup_error}")
 
 
-@app.route("/download-report/<report_id>", methods=["GET"])
+@app.route("/download-report/<report_id>", methods=["GET", "POST"])
 def download_report(report_id):
     _cleanup_expired_reports()
     cache_item = report_cache.get(report_id)
-    if not cache_item:
-        return abort(404, description="Report not found or expired. Please re-analyze your resume.")
+    report_data = cache_item["report_data"] if cache_item else None
 
-    report_data = cache_item["report_data"]
+    if not report_data:
+        token = request.values.get("token", "")
+        report_data = _read_report_token(token, REPORT_CACHE_TTL_MINUTES * 60) if token else None
+
+    if not report_data:
+        return abort(404, description="Report not found or expired. Please re-analyze your resume.")
 
     try:
         pdf_bytes = generate_report_pdf(report_data)

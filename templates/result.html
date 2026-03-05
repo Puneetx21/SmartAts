@@ -243,9 +243,10 @@
   </div>
 
   <div class="action-buttons">
-    <a href="{{ url_for('download_report', report_id=report_id) }}" class="secondary-btn">
-      📄 Download PDF Report
-    </a>
+    <form method="POST" action="{{ url_for('download_report', report_id=report_id) }}" style="display: inline;">
+      <input type="hidden" name="token" value="{{ report_token }}">
+      <button type="submit" class="secondary-btn">📄 Download PDF Report</button>
+    </form>
     <a href="{{ url_for('home') }}" class="primary-btn">
       📤 Analyze Another Resume
     </a>
