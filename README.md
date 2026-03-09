@@ -160,6 +160,13 @@ vercel --prod
 
 **For detailed deployment instructions, troubleshooting, and optimization tips, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
+## 🌐 Live Deployment
+
+The application is deployed and publicly accessible using **Vercel**.
+
+🚀 **Try it here:**  
+👉 https://smart-ats-three.vercel.app
+
 ## Troubleshooting
 
 - If activation is blocked in PowerShell, run: `Set-ExecutionPolicy -Scope Process Bypass`
