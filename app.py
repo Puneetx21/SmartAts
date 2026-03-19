@@ -112,7 +112,9 @@ def analyze():
     if not file or file.filename == "":
         return "No file uploaded", 400
     if not allowed_file(file.filename):
-        return "Only PDF files are allowed", 400
+        return "Only PDF and DOCX files are allowed", 400
+
+    original_filename = os.path.basename(file.filename)
 
     filepath = None
     try:
@@ -129,6 +131,7 @@ def analyze():
             report_id=report_id,
             report_token=report_token,
             role=role_label,
+            resume_filename=original_filename,
             role_config=ROLE_CONFIG[role_key],
             name=parsed["name"],
             ats_score=ats_details["ats_score"],
@@ -175,7 +178,8 @@ def download_report(report_id):
     try:
         pdf_bytes = generate_report_pdf(report_data)
         candidate_name = (report_data.get("name") or "candidate").replace(" ", "_")
-        filename = f"smartats_report_{candidate_name}.pdf"
+        role_name = (report_data.get("role") or "role").replace(" ", "_")
+        filename = f"{candidate_name}_{role_name}.pdf"
 
         # Create BytesIO object from bytes
         pdf_buffer = BytesIO(pdf_bytes)

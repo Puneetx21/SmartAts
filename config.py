@@ -5,8 +5,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Configuration for Vercel deployment
 # /tmp is the only writable directory in Vercel serverless functions
 UPLOAD_FOLDER = "/tmp/uploads"
-MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB limit
-ALLOWED_EXTENSIONS = {"pdf"}
+MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10 MB limit
+ALLOWED_EXTENSIONS = {"pdf", "docx"}
 
 # Ensure upload directory exists (critical for Vercel)
 try:
@@ -63,11 +63,43 @@ ROLE_CONFIG = {
     },
 
     # Full Stack & Mobile
-    "full_stack_developer": {
-        "label": "Full Stack Developer",
-        "required_skills": ["html", "css", "javascript", "react", "node", "python", "rest"],
-        "nice_to_have": ["docker", "aws", "graphql"],
-        "suggestions": ["Build MERN stack project", "Deploy to Vercel", "Learn GraphQL"]
+    "python_fullstack_developer": {
+        "label": "Python Fullstack Developer",
+        "required_skills": [
+            "python", "django", "flask", "rest api", "html", "css", "javascript", "react", "sql"
+        ],
+        "nice_to_have": ["fastapi", "docker", "redis", "postgresql", "aws", "git"],
+        "suggestions": [
+            "Build a full-stack project using Django/Flask + React",
+            "Add authentication, testing, and deployment experience",
+            "Show backend API design with database optimization"
+        ]
+    },
+
+    "mern_developer": {
+        "label": "MERN Stack Developer",
+        "required_skills": [
+            "mongodb", "express", "react", "node", "javascript", "rest api", "html", "css"
+        ],
+        "nice_to_have": ["typescript", "redux", "jwt", "mongoose", "nextjs", "docker"],
+        "suggestions": [
+            "Build production-ready MERN apps with auth and role-based access",
+            "Highlight API integration, state management, and performance optimization",
+            "Add deployment and CI/CD workflow for MERN projects"
+        ]
+    },
+
+    "java_fullstack_developer": {
+        "label": "Java Full-Stack Developer",
+        "required_skills": [
+            "java", "spring boot", "spring", "rest api", "hibernate", "sql", "html", "css", "javascript", "react"
+        ],
+        "nice_to_have": ["microservices", "maven", "junit", "kafka", "docker", "aws"],
+        "suggestions": [
+            "Build a Spring Boot + React full-stack application",
+            "Show clean architecture, testing, and API documentation",
+            "Add microservices and cloud deployment exposure"
+        ]
     },
 
     "android_developer": {

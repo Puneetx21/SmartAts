@@ -4,14 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeToggle = document.getElementById("themeToggle");
   const html = document.documentElement;
   
-  // Get saved theme from localStorage or detect system preference
+  // Get saved theme from localStorage; default to male theme
   const getSavedTheme = () => {
     const saved = localStorage.getItem("theme");
-    if (saved) {
+    if (saved === "male" || saved === "female") {
       return saved;
     }
-    // Detect system preference
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return "male";
   };
   
   const theme = getSavedTheme();
@@ -21,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (themeToggle) {
     themeToggle.addEventListener("click", () => {
       const currentTheme = html.getAttribute("data-theme");
-      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      const newTheme = currentTheme === "female" ? "male" : "female";
       html.setAttribute("data-theme", newTheme);
       localStorage.setItem("theme", newTheme);
     });
@@ -62,16 +61,18 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
+      const fileNameLower = file.name.toLowerCase();
+      const isValidType = fileNameLower.endsWith(".pdf") || fileNameLower.endsWith(".docx");
       
       // Validate file type
-      if (!file.name.toLowerCase().endsWith(".pdf")) {
-        alert("❌ Please upload a PDF file.");
+      if (!isValidType) {
+        alert("❌ Please upload a PDF or DOCX file.");
         return;
       }
       
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("❌ File size must be less than 5MB.");
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert("❌ File size must be less than 10MB.");
         return;
       }
       

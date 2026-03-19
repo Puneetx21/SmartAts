@@ -4,6 +4,11 @@
   <div class="result-header">
     <div>
       <h2>📊 Resume Analysis Results</h2>
+      <div class="result-meta">
+        <span>📄 Resume: {{ resume_filename or "Uploaded Document" }}</span>
+        <span>👤 Resume Title: {{ name or "Not Detected" }}</span>
+        <span>💼 Target Job: {{ role }}</span>
+      </div>
       <p class="role-badge">{{ role }}</p>
     </div>
   </div>
@@ -34,9 +39,10 @@
               </linearGradient>
             </defs>
             <circle class="circular-progress-circle circular-progress-bg" r="45" cx="50" cy="50"></circle>
+            {% set circumference = 45 * 2 * 3.14159 %}
             <circle class="circular-progress-circle circular-progress-fill" r="45" cx="50" cy="50"
-              style="stroke-dasharray: {% set circumference = 45 * 2 * 3.14159 %}{{ circumference }};
-                     stroke-dashoffset: {{ circumference * (1 - ats_score / 100) }};"></circle>
+              stroke-dasharray="{{ circumference }}"
+              stroke-dashoffset="{{ circumference * (1 - ats_score / 100) }}"></circle>
           </svg>
           <div class="circular-progress-text">
             <p class="circular-progress-number">{{ ats_score }}</p>
@@ -61,7 +67,7 @@
       </div>
 
       <!-- Score Interpretation Box -->
-      <div style="flex: 1; min-width: 250px; padding: 2rem; background: rgba(99, 102, 241, 0.1); border-radius: 16px; border: 2px solid var(--accent);">
+      <div style="flex: 1; min-width: 250px; padding: 2rem; background: var(--accent-soft); border-radius: 16px; border: 2px solid var(--accent);">
         <h4 style="margin-top: 0; font-size: 1.3rem; margin-bottom: 1rem;">{{ score_explanation or "Analysis Complete" }}</h4>
         <p style="margin: 0; font-size: 1.1rem; color: var(--muted);">
           {% if ats_score >= 80 %}

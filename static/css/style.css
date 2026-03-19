@@ -1,14 +1,15 @@
 /* ============ CSS Variables & Root Theme ============ */
 :root {
-  /* Light theme (default) - Eye catching vibrant colors */
-  --bg: linear-gradient(135deg, #f0f4ff 0%, #fff5f7 100%);
-  --bg-solid: #f0f4ff;
+  /* Male blue theme (default) */
+  --bg: linear-gradient(135deg, #eaf4ff 0%, #d7ebff 100%);
+  --bg-solid: #eaf4ff;
   --card-bg: #ffffff;
   
-  /* Vibrant accent colors */
-  --accent: #6366f1;
-  --accent-bright: #818cf8;
-  --accent-soft: rgba(99, 102, 241, 0.12);
+  /* Blue accents */
+  --accent: #4361ee;
+  --accent-bright: #5b74f2;
+  --accent-soft: rgba(67, 97, 238, 0.12);
+  --accent-soft-2: rgba(91, 116, 242, 0.1);
   
   /* Gradient colors for scoring */
   --gradient-excellent: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -17,8 +18,8 @@
   --gradient-poor: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   
   /* Text colors */
-  --text: #1a1a2e;
-  --muted: #6b7280;
+  --text: #0f2a43;
+  --muted: #4f6b88;
   
   /* Status colors - vibrant */
   --danger: #ff3333;
@@ -28,24 +29,25 @@
   
   --radius: 16px;
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 32px rgba(99, 102, 241, 0.15);
-  --shadow-xl: 0 20px 40px rgba(99, 102, 241, 0.2);
-  --border-color: #e0e4ff;
+  --shadow-lg: 0 12px 32px rgba(67, 97, 238, 0.15);
+  --shadow-xl: 0 20px 40px rgba(67, 97, 238, 0.2);
+  --border-color: #c7def4;
   
   /* Progress circle background */
-  --progress-bg: #e0e4ff;
+  --progress-bg: #c7def4;
 }
 
-[data-theme="dark"] {
-  /* Dark theme - Deep and vibrant */
-  --bg: linear-gradient(135deg, #0f0a1f 0%, #1a0f2e 100%);
-  --bg-solid: #0f0a1f;
-  --card-bg: #1a1428;
+[data-theme="female"] {
+  /* Female pink theme */
+  --bg: linear-gradient(135deg, #ffe9f3 0%, #ffe0ef 100%);
+  --bg-solid: #ffe9f3;
+  --card-bg: #fff8fc;
   
-  /* Accent colors for dark */
-  --accent: #818cf8;
-  --accent-bright: #a5b4fc;
-  --accent-soft: rgba(129, 140, 248, 0.15);
+  /* Pink accents */
+  --accent: #f72585;
+  --accent-bright: #ff5ea7;
+  --accent-soft: rgba(247, 37, 133, 0.14);
+  --accent-soft-2: rgba(255, 94, 167, 0.12);
   
   /* Gradient colors for scoring (same) */
   --gradient-excellent: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -54,23 +56,23 @@
   --gradient-poor: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   
   /* Text colors */
-  --text: #f5f5f5;
-  --muted: #9ca3af;
+  --text: #4a1230;
+  --muted: #8f4e6d;
   
   /* Status colors */
-  --danger: #ff5555;
-  --success: #00ff99;
+  --danger: #ef476f;
+  --success: #2ca58d;
   --warning: #ffc107;
-  --info: #00d4ff;
+  --info: #2d9cdb;
   
   --radius: 16px;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 12px 32px rgba(129, 140, 248, 0.25);
-  --shadow-xl: 0 20px 40px rgba(129, 140, 248, 0.35);
-  --border-color: #2d1d4e;
+  --shadow: 0 4px 12px rgba(122, 21, 67, 0.14);
+  --shadow-lg: 0 12px 32px rgba(247, 37, 133, 0.22);
+  --shadow-xl: 0 20px 40px rgba(247, 37, 133, 0.28);
+  --border-color: #f4bfd4;
   
   /* Progress circle background */
-  --progress-bg: #2d1d4e;
+  --progress-bg: #f4bfd4;
 }
 
 /* ============ General Styles ============ */
@@ -134,13 +136,14 @@ p {
 
 /* ============ Header ============ */
 .site-header {
-  border-bottom: 2px solid var(--accent);
+  border-bottom: 3px solid var(--accent);
   padding: 2rem 0;
   background: var(--card-bg);
   box-shadow: var(--shadow-lg);
   position: sticky;
   top: 0;
   z-index: 100;
+  background: linear-gradient(180deg, var(--card-bg), var(--card-bg) 98%, var(--accent-soft));
 }
 
 .header-container {
@@ -157,7 +160,7 @@ p {
 .header-content h1 {
   font-size: 2.8rem;
   margin-bottom: 0.3rem;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+  background: linear-gradient(135deg, var(--accent), var(--accent-bright), var(--info));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -172,8 +175,8 @@ p {
 
 /* ============ Theme Toggle ============ */
 .theme-toggle {
-  width: 44px;
-  height: 44px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   border: 2px solid var(--accent);
   background: transparent;
@@ -191,30 +194,31 @@ p {
   background: var(--accent-soft);
 }
 
-.theme-toggle svg {
-  width: 20px;
-  height: 20px;
+.theme-toggle .theme-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  white-space: nowrap;
   position: absolute;
   opacity: 1;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.theme-toggle .sun-icon {
+.theme-toggle .male-icon {
   opacity: 1;
   transform: rotate(0deg);
 }
 
-.theme-toggle .moon-icon {
+.theme-toggle .female-icon {
   opacity: 0;
   transform: rotate(-180deg);
 }
 
-[data-theme="dark"] .theme-toggle .sun-icon {
+[data-theme="female"] .theme-toggle .male-icon {
   opacity: 0;
   transform: rotate(180deg);
 }
 
-[data-theme="dark"] .theme-toggle .moon-icon {
+[data-theme="female"] .theme-toggle .female-icon {
   opacity: 1;
   transform: rotate(0deg);
 }
@@ -271,16 +275,34 @@ p {
   font-size: 1rem;
   font-weight: 700;
   margin: 0;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 12px var(--accent-soft);
   letter-spacing: 0.5px;
   text-transform: uppercase;
+}
+
+.result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.75rem 0;
+}
+
+.result-meta span {
+  display: inline-block;
+  background: var(--accent-soft);
+  color: var(--text);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.92rem;
+  font-weight: 600;
 }
 
 /* ============ Score Section - NEW DESIGN ============ */
 .score-section {
   margin-bottom: 3rem;
   padding: 2.5rem;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.08));
+  background: linear-gradient(135deg, var(--accent-soft), var(--accent-soft-2));
   border-radius: var(--radius);
   border: 2px solid var(--accent);
 }
@@ -344,7 +366,7 @@ p {
 }
 
 .metric-card {
-  background: linear-gradient(135deg, var(--accent-soft), rgba(139, 92, 246, 0.08));
+  background: linear-gradient(135deg, var(--accent-soft), var(--accent-soft-2));
   padding: 1.8rem;
   border-radius: var(--radius);
   text-align: center;
@@ -395,15 +417,15 @@ p {
 
 /* ============ Panels ============ */
 .panel {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.03), rgba(99, 102, 241, 0.05));
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.03), var(--accent-soft));
   border-radius: var(--radius);
   padding: 2rem;
   border: 2px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
-[data-theme="dark"] .panel {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(129, 140, 248, 0.08));
+[data-theme="female"] .panel {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), var(--accent-soft));
 }
 
 .panel:hover {
@@ -435,7 +457,7 @@ p {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.03));
 }
 
-[data-theme="dark"] .panel-success {
+[data-theme="female"] .panel-success {
   background: linear-gradient(135deg, rgba(0, 255, 153, 0.08), rgba(0, 255, 153, 0.03));
 }
 
@@ -608,7 +630,7 @@ select:focus {
   padding: 3rem;
   text-align: center;
   cursor: pointer;
-  background: linear-gradient(135deg, var(--accent-soft), rgba(139, 92, 246, 0.08));
+  background: linear-gradient(135deg, var(--accent-soft), var(--accent-soft-2));
   transition: all 0.3s;
   position: relative;
   overflow: hidden;
@@ -639,7 +661,7 @@ select:focus {
 
 .drop-zone.drag-over {
   border-color: var(--accent-bright);
-  background: linear-gradient(135deg, rgba(129, 140, 248, 0.2), rgba(139, 92, 246, 0.15));
+  background: linear-gradient(135deg, var(--accent-soft), var(--accent-soft-2));
   transform: scale(1.02);
 }
 
@@ -673,12 +695,12 @@ select:focus {
 .primary-btn {
   background: linear-gradient(135deg, var(--accent), var(--accent-bright));
   color: white;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 6px 20px var(--accent-soft);
 }
 
 .primary-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 10px 30px var(--accent-soft-2);
 }
 
 .primary-btn:active {
@@ -745,8 +767,8 @@ select:focus {
   padding: 2.5rem 1.5rem;
   color: var(--muted);
   font-size: 1rem;
-  border-top: 2px solid var(--border-color);
-  background: var(--card-bg);
+  border-top: 3px solid var(--accent);
+  background: linear-gradient(180deg, var(--card-bg), var(--bg-solid));
   margin-top: auto;
 }
 

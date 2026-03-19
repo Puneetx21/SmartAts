@@ -3,11 +3,12 @@
 <section class="card fade-in">
   <!-- Hero Section -->
   <div style="text-align: center; margin-bottom: 3rem;">
-    <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+    <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--accent), var(--accent-bright), var(--info)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
         Resume ATS Analyzer
     </h2>
+    <div style="height: 2px; width: 50px; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); margin: 0.75rem auto 1.5rem; border-radius: 1px;"></div>
     <p style="font-size: 1.3rem; color: var(--muted); max-width: 700px; margin: 0 auto; line-height: 1.6;">
-      Beat the ATS system! Get instant feedback on your resume with our advanced analysis engine. Find gaps, optimize keywords, and land more interviews.
+      📊 Beat the ATS system! Get instant feedback on your resume with our advanced analysis engine. Find gaps, optimize keywords, and land more interviews.
     </p>
   </div>
 
@@ -22,11 +23,11 @@
       {% endfor %}
     </select>
 
-    <label for="resume">📄 Upload Your Resume (PDF Format)</label>
+    <label for="resume">📄 Upload Your Resume (PDF or DOCX)</label>
     <div id="dropZone" class="drop-zone">
-      <p id="dropText">Drag & drop your PDF here or click to select</p>
-      <small>Maximum file size: 10MB | PDF format only</small>
-      <input type="file" id="resume" name="resume" accept=".pdf" hidden required>
+      <p id="dropText">Drag & drop your PDF/DOCX file here or click to select</p>
+      <small>Maximum file size: 10MB | PDF and DOCX formats supported</small>
+      <input type="file" id="resume" name="resume" accept=".pdf,.docx" hidden required>
     </div>
     <p id="fileName" class="file-name"></p>
 
@@ -83,7 +84,7 @@
   </div>
 
   <!-- How It Works -->
-  <div style="margin-top: 3rem; padding: 2.5rem; background: linear-gradient(135deg, var(--accent-soft), rgba(139, 92, 246, 0.08)); border-radius: 16px; border: 2px solid var(--accent);">
+  <div style="margin-top: 3rem; padding: 2.5rem; background: linear-gradient(135deg, var(--accent-soft), var(--accent-soft-2)); border-radius: 16px; border: 2px solid var(--accent);">
     <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.8rem;">📋 How It Works</h3>
     <div style="display: grid; gap: 1.5rem; max-width: 600px; margin: 0 auto;">
       <div style="display: flex; gap: 1.5rem; align-items: start;">
@@ -97,8 +98,8 @@
       <div style="display: flex; gap: 1.5rem; align-items: start;">
         <div style="flex-shrink: 0; width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), var(--accent-bright)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.1rem;">2</div>
         <div>
-          <h4 style="margin: 0 0 0.5rem 0;">Upload Your PDF Resume</h4>
-          <p style="margin: 0; color: var(--muted);">Simply drag and drop or select your resume file - PDF format only</p>
+          <h4 style="margin: 0 0 0.5rem 0;">Upload Your Resume (PDF/DOCX)</h4>
+          <p style="margin: 0; color: var(--muted);">Simply drag and drop or select your resume file - PDF or DOCX format</p>
         </div>
       </div>
 

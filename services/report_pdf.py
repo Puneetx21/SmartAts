@@ -25,15 +25,15 @@ def _add_section_header(content, styles, title: str):
                 ("FONTSIZE", (0, 0), (-1, -1), 11),
                 ("LEFTPADDING", (0, 0), (-1, -1), 8),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-                ("TOPPADDING", (0, 0), (-1, -1), 6),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
                 ("LINEBELOW", (0, 0), (-1, -1), 0.8, colors.HexColor("#c7d2fe")),
             ]
         )
     )
-    content.append(Spacer(1, 10))
+    content.append(Spacer(1, 5))
     content.append(header_table)
-    content.append(Spacer(1, 6))
+    content.append(Spacer(1, 3))
 
 
 def _add_bullet_list(content, styles, items):
@@ -46,10 +46,10 @@ def generate_report_pdf(report_data: dict) -> bytes:
     document = SimpleDocTemplate(
         buffer,
         pagesize=A4,
-        rightMargin=0.6 * inch,
-        leftMargin=0.6 * inch,
-        topMargin=0.7 * inch,
-        bottomMargin=0.7 * inch,
+        rightMargin=0.4 * inch,
+        leftMargin=0.4 * inch,
+        topMargin=0.5 * inch,
+        bottomMargin=0.5 * inch,
     )
 
     styles = getSampleStyleSheet()
@@ -117,9 +117,9 @@ def generate_report_pdf(report_data: dict) -> bytes:
         )
     )
     content.append(title_table)
-    content.append(Spacer(1, 8))
+    content.append(Spacer(1, 4))
     content.append(Paragraph(f"Generated on {report_time}", styles["MetaLine"]))
-    content.append(Spacer(1, 6))
+    content.append(Spacer(1, 3))
 
     score_card = Table(
         [[f"Overall ATS Score: {ats_score}/100", f"Keyword Coverage: {keyword_coverage}%"]],
@@ -204,29 +204,186 @@ def generate_report_pdf(report_data: dict) -> bytes:
 
     keyword_match = report_data.get("keyword_match", {})
     _add_section_header(content, styles, "Keyword Analysis")
+    
+    # Required Skills Present Table
     content.append(Paragraph("Required Skills Present", styles["SubTitle"]))
-    _add_bullet_list(content, styles, keyword_match.get("required_present", []))
-
+    required_present = _safe_list(keyword_match.get("required_present", []))
+    rp_rows = [[skill] for skill in required_present]
+    if rp_rows:
+        rp_table = Table(rp_rows, colWidths=[6.8 * inch])
+        rp_table.setStyle(
+            TableStyle(
+                [
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d1d5db")),
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#ecfdf5")),
+                    ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#065f46")),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                    ("TOPPADDING", (0, 0), (-1, -1), 5),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+                ]
+            )
+        )
+        content.append(rp_table)
+    else:
+        content.append(Paragraph("None", styles["BodyLine"]))
+    
+    content.append(Spacer(1, 4))
+    
+    # Missing Required Skills Table
     content.append(Paragraph("Missing Required Skills", styles["SubTitle"]))
-    _add_bullet_list(content, styles, keyword_match.get("required_missing", []))
-
+    required_missing = _safe_list(keyword_match.get("required_missing", []))
+    rm_rows = [[skill] for skill in required_missing]
+    if rm_rows:
+        rm_table = Table(rm_rows, colWidths=[6.8 * inch])
+        rm_table.setStyle(
+            TableStyle(
+                [
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d1d5db")),
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#fee2e2")),
+                    ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#7f1d1d")),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                    ("TOPPADDING", (0, 0), (-1, -1), 5),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+                ]
+            )
+        )
+        content.append(rm_table)
+    else:
+        content.append(Paragraph("None", styles["BodyLine"]))
+    
+    content.append(Spacer(1, 4))
+    
+    # Nice-to-Have Skills Present Table
     content.append(Paragraph("Nice-to-Have Skills Present", styles["SubTitle"]))
-    _add_bullet_list(content, styles, keyword_match.get("nice_present", []))
+    nice_present = _safe_list(keyword_match.get("nice_present", []))
+    np_rows = [[skill] for skill in nice_present]
+    if np_rows:
+        np_table = Table(np_rows, colWidths=[6.8 * inch])
+        np_table.setStyle(
+            TableStyle(
+                [
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d1d5db")),
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#fef3c7")),
+                    ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#78350f")),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                    ("TOPPADDING", (0, 0), (-1, -1), 5),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+                ]
+            )
+        )
+        content.append(np_table)
+    else:
+        content.append(Paragraph("None", styles["BodyLine"]))
 
     _add_section_header(content, styles, "Feedback Summary")
+    
+    # Strong Areas Table
     content.append(Paragraph("Strong Areas", styles["SubTitle"]))
-    _add_bullet_list(content, styles, report_data.get("strong_areas", []))
-
+    strong_areas = _safe_list(report_data.get("strong_areas", []))
+    strong_rows = [[area] for area in strong_areas]
+    if strong_rows:
+        strong_table = Table(strong_rows, colWidths=[6.8 * inch])
+        strong_table.setStyle(
+            TableStyle(
+                [
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d1d5db")),
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#f0fdf4")),
+                    ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#166534")),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                    ("TOPPADDING", (0, 0), (-1, -1), 6),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ]
+            )
+        )
+        content.append(strong_table)
+    else:
+        content.append(Paragraph("None", styles["BodyLine"]))
+    
+    content.append(Spacer(1, 4))
+    
+    # Areas for Improvement Table
     content.append(Paragraph("Areas for Improvement", styles["SubTitle"]))
-    _add_bullet_list(content, styles, report_data.get("weak_points", []))
-
+    weak_points = _safe_list(report_data.get("weak_points", []))
+    weak_rows = [[point] for point in weak_points]
+    if weak_rows:
+        weak_table = Table(weak_rows, colWidths=[6.8 * inch])
+        weak_table.setStyle(
+            TableStyle(
+                [
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d1d5db")),
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#fef2f2")),
+                    ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#991b1b")),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                    ("TOPPADDING", (0, 0), (-1, -1), 6),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ]
+            )
+        )
+        content.append(weak_table)
+    else:
+        content.append(Paragraph("None", styles["BodyLine"]))
+    
+    content.append(Spacer(1, 4))
+    
+    # Prioritized Suggestions Table
     content.append(Paragraph("Prioritized Suggestions", styles["SubTitle"]))
-    _add_bullet_list(content, styles, report_data.get("improvement_suggestions", []))
+    suggestions = _safe_list(report_data.get("improvement_suggestions", []))
+    sugg_rows = [[sugg] for sugg in suggestions]
+    if sugg_rows:
+        sugg_table = Table(sugg_rows, colWidths=[6.8 * inch])
+        sugg_table.setStyle(
+            TableStyle(
+                [
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d1d5db")),
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#eff6ff")),
+                    ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#1e3a8a")),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                    ("TOPPADDING", (0, 0), (-1, -1), 6),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ]
+            )
+        )
+        content.append(sugg_table)
+    else:
+        content.append(Paragraph("None", styles["BodyLine"]))
 
+    # Resume Format Best Practices Table
     _add_section_header(content, styles, "Resume Format Best Practices")
-    _add_bullet_list(content, styles, report_data.get("template_feedback", []))
+    template_feedback = _safe_list(report_data.get("template_feedback", []))
+    template_rows = [[item] for item in template_feedback]
+    if template_rows:
+        template_table = Table(template_rows, colWidths=[6.8 * inch])
+        template_table.setStyle(
+            TableStyle(
+                [
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d1d5db")),
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#fef9c3")),
+                    ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#78350f")),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                    ("TOPPADDING", (0, 0), (-1, -1), 6),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ]
+            )
+        )
+        content.append(template_table)
+    else:
+        content.append(Paragraph("None", styles["BodyLine"]))
 
-    content.append(Spacer(1, 12))
+    content.append(Spacer(1, 6))
     content.append(Paragraph("This report is generated by SmartATS (logic-based analysis).", styles["MetaLine"]))
 
     document.build(content)
