@@ -25,47 +25,279 @@ TERM_VARIANTS = {
     "golang": {"golang", "go"},
     "rest": {"rest", "rest api", "restful", "restful api"},
     "ci/cd": {"ci/cd", "ci cd", "cicd"},
+    "rails": {"rails", "ruby on rails", "ror"},
+    "kotlin": {"kotlin"},
+    "swift": {"swift"},
+    "swiftui": {"swiftui", "swift ui"},
+    "uikit": {"uikit", "ui kit"},
+    "android": {"android", "android sdk", "android development"},
+    "php": {"php"},
+    "laravel": {"laravel"},
+    "symfony": {"symfony"},
+    "go": {"go", "golang"},
+    "grpc": {"grpc", "g rpc"},
+    "gin": {"gin", "gin-gonic"},
+    "gorm": {"gorm"},
+    "entity framework": {"entity framework", "ef core", "entityframework"},
 }
 
 DEFAULT_SCORING_WEIGHTS = {
-    "keyword": 0.45,
-    "sections": 0.18,
-    "action_verbs": 0.12,
-    "technical_depth": 0.10,
-    "consistency": 0.08,
+    "keyword": 0.43,
+    "sections": 0.19,
+    "action_verbs": 0.10,
+    "technical_depth": 0.08,
+    "consistency": 0.07,
     "length": 0.04,
     "formatting": 0.03,
+    "role_signals": 0.01,
+    "ats_friendliness": 0.05,
 }
 
 ROLE_SCORING_WEIGHTS = {
-    "python_fullstack_developer": {
-        "keyword": 0.43,
-        "sections": 0.17,
-        "action_verbs": 0.10,
-        "technical_depth": 0.13,
-        "consistency": 0.08,
-        "length": 0.05,
-        "formatting": 0.04,
-    },
     "mern_developer": {
-        "keyword": 0.44,
+        "keyword": 0.42,
         "sections": 0.14,
         "action_verbs": 0.12,
         "technical_depth": 0.14,
         "consistency": 0.07,
         "length": 0.05,
         "formatting": 0.04,
+        "role_signals": 0.01,
     },
-    "java_fullstack_developer": {
-        "keyword": 0.44,
-        "sections": 0.16,
-        "action_verbs": 0.10,
+    "data_scientist": {
+        "keyword": 0.40,
+        "sections": 0.17,
+        "action_verbs": 0.11,
         "technical_depth": 0.14,
         "consistency": 0.08,
         "length": 0.05,
         "formatting": 0.03,
+        "role_signals": 0.01,
+    },
+    "ui_ux_designer": {
+        "keyword": 0.40,
+        "sections": 0.17,
+        "action_verbs": 0.12,
+        "technical_depth": 0.09,
+        "consistency": 0.10,
+        "length": 0.05,
+        "formatting": 0.03,
+        "role_signals": 0.01,
     },
 }
+
+DEVELOPER_ROLE_KEYS = {
+    "software_engineer",
+    "full_stack_developer",
+    "frontend_developer",
+    "backend_developer",
+    "web_developer",
+    "python_fullstack_developer",
+    "java_fullstack_developer",
+    "python_developer",
+    "java_developer",
+    "mern_developer",
+    "cpp_developer",
+    "c_developer",
+    "ruby_developer",
+    "android_developer",
+    "ios_developer",
+    "dotnet_developer",
+    "php_developer",
+    "go_developer",
+}
+
+ROLE_SIGNAL_RULES = {
+    "default": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("linkedin", 1), ("github", 1)]],
+        "weighted": [
+            ("has_quantified_impact", 25, 1),
+            ("linkedin", 15, 1),
+            ("github", 15, 1),
+            ("project_links_count", 20, 1),
+            ("certifications_count", 10, 1),
+            ("portfolio", 5, 1),
+        ],
+    },
+    "data_scientist": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("kaggle", 1), ("github", 1), ("huggingface", 1)]],
+        "weighted": [
+            ("kaggle", 20, 1),
+            ("huggingface", 20, 1),
+            ("github", 15, 1),
+            ("project_links_count", 20, 1),
+            ("has_quantified_impact", 25, 1),
+        ],
+    },
+    "data_analyst": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("linkedin", 1), ("project_links_count", 1)]],
+        "weighted": [
+            ("project_links_count", 25, 1),
+            ("has_quantified_impact", 30, 1),
+            ("linkedin", 15, 1),
+            ("certifications_count", 10, 1),
+            ("github", 10, 1),
+        ],
+    },
+    "ui_ux_designer": {
+        "required_all": [("project_links_count", 1)],
+        "required_any": [[("behance", 1), ("dribbble", 1), ("figma_link", 1)]],
+        "weighted": [
+            ("portfolio", 10, 1),
+            ("behance", 20, 1),
+            ("dribbble", 20, 1),
+            ("figma_link", 15, 1),
+            ("project_links_count", 20, 1),
+        ],
+    },
+    "cloud_engineer": {
+        "required_all": [("certifications_count", 1), ("has_quantified_impact", 1)],
+        "required_any": [[("linkedin", 1), ("github", 1)]],
+        "weighted": [
+            ("certifications_count", 35, 1),
+            ("has_quantified_impact", 25, 1),
+            ("linkedin", 10, 1),
+            ("github", 10, 1),
+            ("project_links_count", 20, 1),
+        ],
+    },
+    "cybersecurity_analyst": {
+        "required_all": [("certifications_count", 1), ("has_quantified_impact", 1)],
+        "required_any": [[("linkedin", 1), ("github", 1)]],
+        "weighted": [
+            ("certifications_count", 35, 1),
+            ("has_quantified_impact", 25, 1),
+            ("linkedin", 10, 1),
+            ("github", 10, 1),
+            ("project_links_count", 20, 1),
+        ],
+    },
+    "cpp_developer": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("github", 1), ("project_links_count", 1)]],
+        "weighted": [
+            ("github", 25, 1),
+            ("project_links_count", 25, 1),
+            ("has_quantified_impact", 30, 1),
+            ("linkedin", 10, 1),
+        ],
+    },
+    "c_developer": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("github", 1), ("project_links_count", 1)]],
+        "weighted": [
+            ("github", 20, 1),
+            ("project_links_count", 30, 1),
+            ("has_quantified_impact", 30, 1),
+            ("linkedin", 10, 1),
+        ],
+    },
+    "ruby_developer": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("github", 1), ("project_links_count", 1)]],
+        "weighted": [
+            ("github", 20, 1),
+            ("project_links_count", 25, 1),
+            ("has_quantified_impact", 30, 1),
+            ("linkedin", 10, 1),
+        ],
+    },
+    "python_fullstack_developer": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("github", 1), ("project_links_count", 1)]],
+        "weighted": [
+            ("github", 20, 1),
+            ("project_links_count", 25, 1),
+            ("portfolio", 15, 1),
+            ("has_quantified_impact", 30, 1),
+        ],
+    },
+    "java_fullstack_developer": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("github", 1), ("project_links_count", 1)]],
+        "weighted": [
+            ("github", 20, 1),
+            ("project_links_count", 25, 1),
+            ("portfolio", 10, 1),
+            ("has_quantified_impact", 30, 1),
+            ("linkedin", 10, 1),
+        ],
+    },
+    "android_developer": {
+        "required_all": [("project_links_count", 1)],
+        "required_any": [[("github", 1), ("portfolio", 1)]],
+        "weighted": [
+            ("project_links_count", 30, 1),
+            ("github", 20, 1),
+            ("portfolio", 20, 1),
+            ("has_quantified_impact", 20, 1),
+        ],
+    },
+    "ml_engineer": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("github", 1), ("huggingface", 1), ("kaggle", 1)]],
+        "weighted": [
+            ("huggingface", 25, 1),
+            ("kaggle", 20, 1),
+            ("github", 20, 1),
+            ("project_links_count", 15, 1),
+            ("has_quantified_impact", 20, 1),
+        ],
+    },
+    "ios_developer": {
+        "required_all": [("project_links_count", 1)],
+        "required_any": [[("github", 1), ("portfolio", 1)]],
+        "weighted": [
+            ("project_links_count", 30, 1),
+            ("github", 20, 1),
+            ("portfolio", 20, 1),
+            ("has_quantified_impact", 20, 1),
+        ],
+    },
+    "dotnet_developer": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("github", 1), ("linkedin", 1)]],
+        "weighted": [
+            ("github", 20, 1),
+            ("linkedin", 15, 1),
+            ("project_links_count", 20, 1),
+            ("certifications_count", 10, 1),
+            ("has_quantified_impact", 25, 1),
+        ],
+    },
+    "php_developer": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("github", 1), ("project_links_count", 1)]],
+        "weighted": [
+            ("github", 20, 1),
+            ("project_links_count", 25, 1),
+            ("portfolio", 10, 1),
+            ("has_quantified_impact", 30, 1),
+        ],
+    },
+    "go_developer": {
+        "required_all": [("has_quantified_impact", 1)],
+        "required_any": [[("github", 1), ("project_links_count", 1)]],
+        "weighted": [
+            ("github", 25, 1),
+            ("project_links_count", 20, 1),
+            ("has_quantified_impact", 30, 1),
+            ("linkedin", 10, 1),
+        ],
+    },
+}
+
+
+def _signal_present(signals: dict, signal_key: str, min_value: int = 1) -> bool:
+    raw_value = signals.get(signal_key)
+    if isinstance(raw_value, bool):
+        return raw_value
+    if isinstance(raw_value, (int, float)):
+        return raw_value >= min_value
+    return bool(raw_value)
 
 
 def _normalize_for_match(text: str) -> str:
@@ -115,6 +347,64 @@ def _get_scoring_weights(role_key: str) -> dict:
     return ROLE_SCORING_WEIGHTS.get(role_key, DEFAULT_SCORING_WEIGHTS)
 
 
+def _detect_backend_language(normalized_text: str, normalized_skills: set) -> str:
+    backend_languages = ["python", "java", "node"]
+    detected = []
+    for language in backend_languages:
+        if _contains_term(normalized_text, normalized_skills, language):
+            detected.append(language)
+
+    if not detected:
+        return "not_detected"
+
+    if len(detected) == 1:
+        return detected[0]
+
+    return "multi_stack"
+
+
+def _evaluate_required_groups(config: dict, normalized_text: str, normalized_skills: set) -> tuple:
+    groups = config.get("any_of_skill_groups", [])
+    group_results = []
+    group_present_labels = []
+    group_missing_labels = []
+    matched_units = 0
+    total_units = 0
+
+    for group in groups:
+        skills = group.get("skills", [])
+        group_name = group.get("name", "Skill Group")
+        min_required = max(1, int(group.get("min_required", 1)))
+        is_required = bool(group.get("required", True))
+
+        matched_skills = [skill for skill in skills if _contains_term(normalized_text, normalized_skills, skill)]
+        matched_count = len(matched_skills)
+        satisfied = matched_count >= min_required
+
+        result = {
+            "name": group_name,
+            "required": is_required,
+            "skills": skills,
+            "matched": matched_skills,
+            "matched_count": matched_count,
+            "min_required": min_required,
+            "satisfied": satisfied,
+        }
+        group_results.append(result)
+
+        if is_required:
+            total_units += min_required
+            matched_units += min(matched_count, min_required)
+
+            options = " OR ".join(skills)
+            if satisfied:
+                group_present_labels.append(f"{group_name}: {', '.join(matched_skills[:min_required])}")
+            else:
+                group_missing_labels.append(f"{group_name} (need {min_required}: {options})")
+
+    return group_results, group_present_labels, group_missing_labels, matched_units, total_units
+
+
 def keyword_match_score(skills: list, full_text: str, role_key: str) -> dict:
     """Role-aware keyword matching using normalized text for PDF/DOCX stability."""
     config = ROLE_CONFIG[role_key]
@@ -133,20 +423,46 @@ def keyword_match_score(skills: list, full_text: str, role_key: str) -> dict:
         if _contains_term(normalized_text, normalized_skills, kw):
             present_nice.append(kw)
 
-    required_coverage = len(present_required) / max(1, len(config["required_skills"])) * 100
+    (
+        group_results,
+        group_present_labels,
+        group_missing_labels,
+        group_matched_units,
+        group_total_units,
+    ) = _evaluate_required_groups(config, normalized_text, normalized_skills)
+
+    total_required_units = len(config["required_skills"]) + group_total_units
+    matched_required_units = len(present_required) + group_matched_units
+
+    # ATS-friendly smoothing: long role skill lists should not over-penalize candidates.
+    base_required = len(config["required_skills"])
+    effective_required_total = min(base_required, 10) + max(0, base_required - 10) * 0.35 + group_total_units
+    effective_required_matched = min(len(present_required), 10) + max(0, len(present_required) - 10) * 0.35 + group_matched_units
+
+    required_coverage = effective_required_matched / max(1, effective_required_total) * 100
     nice_coverage = len(present_nice) / max(1, len(config["nice_to_have"])) * 100 if config["nice_to_have"] else 0
     coverage = (required_coverage * 0.85) + (nice_coverage * 0.15)
     role_alignment = (required_coverage * 0.9) + (nice_coverage * 0.1)
+    inferred_backend_language = _detect_backend_language(normalized_text, normalized_skills)
+
+    combined_present = present_required + group_present_labels
+    combined_missing = missing_required + group_missing_labels
 
     return {
-        "required_present": present_required,
-        "required_missing": missing_required,
+        "required_present": combined_present,
+        "required_missing": combined_missing,
+        "base_required_present": present_required,
+        "base_required_missing": missing_required,
+        "condition_present": group_present_labels,
+        "condition_missing": group_missing_labels,
+        "condition_results": group_results,
         "nice_present": present_nice,
         "coverage": coverage,
         "required_coverage": required_coverage,
         "nice_coverage": nice_coverage,
         "role_alignment": role_alignment,
-        "total_skills_matched": len(present_required) + len(present_nice),
+        "total_skills_matched": len(combined_present) + len(present_nice),
+        "inferred_backend_language": inferred_backend_language,
     }
 
 
@@ -155,6 +471,8 @@ def section_completeness(sections: dict) -> dict:
     expected = ["skills", "education", "experience", "projects"]
     present, missing = [], []
     section_quality = {}
+    section_word_counts = {}
+    section_feedback = {}
 
     for section in expected:
         content = sections.get(section, "")
@@ -162,18 +480,37 @@ def section_completeness(sections: dict) -> dict:
         if content and content.strip():
             present.append(section)
             words = len(content.split())
+            section_word_counts[section] = words
 
             if section == "skills":
-                quality = 1.0 if words >= 15 else 0.75 if words >= 8 else 0.5
+                quality = 1.0 if words >= 12 else 0.75 if words >= 6 else 0.5
+                feedback = (
+                    "Strong skills coverage"
+                    if quality == 1.0
+                    else "Add more specific tools, frameworks, and proficiency context"
+                )
             elif section in {"experience", "projects"}:
-                quality = 1.0 if words >= 80 else 0.75 if words >= 35 else 0.5
+                quality = 1.0 if words >= 55 else 0.75 if words >= 25 else 0.5
+                feedback = (
+                    "Strong detail depth with room for measurable impact"
+                    if quality == 1.0
+                    else "Add quantified outcomes and richer role/project context"
+                )
             else:
-                quality = 1.0 if words >= 30 else 0.75 if words >= 15 else 0.5
+                quality = 1.0 if words >= 22 else 0.75 if words >= 10 else 0.5
+                feedback = (
+                    "Education section is well detailed"
+                    if quality == 1.0
+                    else "Add degree, institution, graduation timeline, and notable achievements"
+                )
 
             section_quality[section] = quality
+            section_feedback[section] = feedback
         else:
             missing.append(section)
             section_quality[section] = 0.0
+            section_word_counts[section] = 0
+            section_feedback[section] = "Section missing - add this section with concise, relevant details"
 
     presence_score = len(present) / len(expected) * 100
     quality_average = sum(section_quality.values()) / len(section_quality)
@@ -184,6 +521,8 @@ def section_completeness(sections: dict) -> dict:
         "missing": missing,
         "completeness": completeness,
         "quality_scores": section_quality,
+        "word_counts": section_word_counts,
+        "section_feedback": section_feedback,
         "quality_average": quality_average,
     }
 
@@ -191,15 +530,15 @@ def section_completeness(sections: dict) -> dict:
 def length_score(full_text: str) -> float:
     """Length scoring centered on an optimal one-page to one-and-half-page resume."""
     words = len(full_text.split())
-    target_words = 550
-    score = 100 - abs(words - target_words) * 0.12
+    target_words = 500
+    score = 100 - abs(words - target_words) * 0.09
 
-    if words < 220:
-        score = min(score, 55)
-    elif words > 1200:
+    if words < 180:
         score = min(score, 60)
+    elif words > 1350:
+        score = min(score, 65)
 
-    return max(40.0, min(100.0, score))
+    return max(50.0, min(100.0, score))
 
 
 def formatting_score(full_text: str, sections: dict) -> float:
@@ -349,6 +688,164 @@ def consistency_score(full_text: str, sections: dict) -> float:
     return min(100.0, score)
 
 
+def ats_friendliness_score(full_text: str, sections: dict) -> dict:
+    """Estimate ATS parseability from format/layout signals that commonly affect screening."""
+    lines = [line.strip() for line in full_text.splitlines() if line.strip()]
+    if not lines:
+        return {
+            "score": 45.0,
+            "breakdown": {
+                "heading_structure": 0.0,
+                "contact_readability": 0.0,
+                "bullet_structure": 0.0,
+                "table_density": 0.0,
+                "line_readability": 0.0,
+            },
+        }
+
+    heading_structure = len([s for s in ["skills", "education", "experience", "projects"] if sections.get(s)]) / 4 * 100
+
+    has_email = bool(re.search(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", full_text))
+    has_phone = bool(re.search(r"\+?\d[\d\s().-]{8,}\d", full_text))
+    has_link = bool(re.search(r"linkedin|github|https?://", full_text.lower()))
+    contact_readability = (has_email * 45) + (has_phone * 35) + (has_link * 20)
+
+    bullet_lines = [line for line in lines if re.match(r"^([\-•*]|\d+[.)])\s+", line)]
+    bullet_ratio = len(bullet_lines) / max(1, len(lines))
+    if 0.08 <= bullet_ratio <= 0.50:
+        bullet_structure = 100.0
+    elif bullet_ratio > 0:
+        bullet_structure = 70.0
+    else:
+        bullet_structure = 45.0
+
+    table_like_lines = [line for line in lines if "|" in line or "\t" in line]
+    table_ratio = len(table_like_lines) / max(1, len(lines))
+    table_density = max(0.0, 100.0 - (table_ratio * 220))
+
+    avg_words_per_line = sum(len(line.split()) for line in lines) / max(1, len(lines))
+    if 4 <= avg_words_per_line <= 16:
+        line_readability = 100.0
+    elif 2 <= avg_words_per_line <= 20:
+        line_readability = 80.0
+    else:
+        line_readability = 60.0
+
+    score = (
+        heading_structure * 0.28
+        + contact_readability * 0.20
+        + bullet_structure * 0.22
+        + table_density * 0.15
+        + line_readability * 0.15
+    )
+
+    return {
+        "score": round(min(100.0, max(45.0, score)), 1),
+        "breakdown": {
+            "heading_structure": round(heading_structure, 1),
+            "contact_readability": round(contact_readability, 1),
+            "bullet_structure": round(bullet_structure, 1),
+            "table_density": round(table_density, 1),
+            "line_readability": round(line_readability, 1),
+        },
+    }
+
+
+def role_signal_score(parsed: dict, role_key: str) -> dict:
+    signals = parsed.get("profile_signals", {})
+    rules = ROLE_SIGNAL_RULES.get(role_key, ROLE_SIGNAL_RULES["default"])
+
+    required_all = rules.get("required_all", [])
+    required_any = rules.get("required_any", [])
+    weighted = rules.get("weighted", [])
+
+    required_present = []
+    required_missing = []
+    required_any_present = []
+    required_any_missing = []
+    required_any_groups_met = 0
+
+    for signal_key, min_value in required_all:
+        if _signal_present(signals, signal_key, min_value):
+            required_present.append(signal_key)
+        else:
+            required_missing.append(signal_key)
+
+    for group in required_any:
+        matched = [signal_key for signal_key, min_value in group if _signal_present(signals, signal_key, min_value)]
+        if matched:
+            required_any_present.extend(matched)
+            required_any_groups_met += 1
+        else:
+            group_keys = [signal_key for signal_key, _ in group]
+            required_any_missing.extend(group_keys)
+
+    mandatory_total = len(required_all) + len(required_any)
+    mandatory_met = len(required_present) + required_any_groups_met
+    # Keep role evidence as a light supporting signal instead of a strong penalty.
+    mandatory_score = 30 + (mandatory_met / max(1, mandatory_total)) * 20
+
+    weighted_total = sum(points for _, points, _ in weighted)
+    weighted_earned = 0
+    present = set(required_present + required_any_present)
+
+    for signal_key, points, min_value in weighted:
+        if _signal_present(signals, signal_key, min_value):
+            weighted_earned += points
+            present.add(signal_key)
+
+    weighted_score = (weighted_earned / max(1, weighted_total)) * 50
+    score = min(100.0, mandatory_score + weighted_score)
+
+    expected = sorted({signal for signal, _ in required_all} | {signal for group in required_any for signal, _ in group} | {signal for signal, _, _ in weighted})
+    missing = [signal for signal in expected if signal not in present]
+
+    return {
+        "score": score,
+        "expected": expected,
+        "present": sorted(present),
+        "missing": missing,
+        "required_present": required_present,
+        "required_missing": required_missing,
+        "required_any_missing": required_any_missing,
+        "raw_signals": signals,
+    }
+
+
+def developer_role_calibration_bonus(role_key: str, keyword_data: dict, section_data: dict, action_score: float, consistency: float) -> float:
+    """Apply a small ATS-friendly uplift for clearly strong developer resumes without masking gaps."""
+    if role_key not in DEVELOPER_ROLE_KEYS:
+        return 0.0
+
+    req_cov = keyword_data.get("required_coverage", 0)
+    sec_cov = section_data.get("completeness", 0)
+    missing_required = len(keyword_data.get("required_missing", []))
+    condition_missing = len(keyword_data.get("condition_missing", []))
+    structure_score = (action_score + consistency) / 2
+
+    bonus = 0.0
+
+    # Core fit and structure thresholds.
+    if req_cov >= 88 and sec_cov >= 85 and missing_required <= 2:
+        bonus += 4.0
+    elif req_cov >= 78 and sec_cov >= 75 and missing_required <= 3:
+        bonus += 2.5
+    elif req_cov >= 68 and sec_cov >= 68 and missing_required <= 4:
+        bonus += 1.2
+
+    # Reward polished writing/consistency mildly.
+    if structure_score >= 82:
+        bonus += 1.2
+    elif structure_score >= 72:
+        bonus += 0.6
+
+    # Preserve accuracy when conditional role requirements are still missing.
+    if condition_missing > 0:
+        bonus -= min(1.5, condition_missing * 0.6)
+
+    return round(max(0.0, min(5.2, bonus)), 2)
+
+
 def compute_ats_score(parsed: dict, role_key: str) -> dict:
     """Comprehensive ATS score computation with role-focused weighted metrics."""
     full_text = parsed["full_text"]
@@ -363,6 +860,9 @@ def compute_ats_score(parsed: dict, role_key: str) -> dict:
     av_score = action_verb_score(full_text)
     td_score = technical_depth_score(skills, role_key, km)
     cons_score = consistency_score(full_text, sections)
+    ats_friendly = ats_friendliness_score(full_text, sections)
+    rs = role_signal_score(parsed, role_key)
+    calibration_bonus = developer_role_calibration_bonus(role_key, km, sc, av_score, cons_score)
 
     weights = _get_scoring_weights(role_key)
     score_components = {
@@ -373,8 +873,11 @@ def compute_ats_score(parsed: dict, role_key: str) -> dict:
         "consistency": weights["consistency"] * cons_score,
         "length": weights["length"] * ls,
         "formatting": weights["formatting"] * fs,
+        "role_signals": weights["role_signals"] * rs["score"],
+        "ats_friendliness": weights.get("ats_friendliness", 0) * ats_friendly["score"],
     }
     score = sum(score_components.values())
+    score += calibration_bonus
 
     return {
         "ats_score": round(min(100.0, score), 2),
@@ -385,6 +888,11 @@ def compute_ats_score(parsed: dict, role_key: str) -> dict:
         "action_verb_score": round(av_score, 1),
         "technical_depth_score": round(td_score, 1),
         "consistency_score": round(cons_score, 1),
+        "ats_friendliness_score": ats_friendly["score"],
+        "ats_friendliness_breakdown": ats_friendly["breakdown"],
+        "role_signal_score": round(rs["score"], 1),
+        "role_signal_analysis": rs,
+        "calibration_bonus": calibration_bonus,
         "experience_level": exp_level,
         "scoring_weights": weights,
         "score_components": {k: round(v, 2) for k, v in score_components.items()},

@@ -24,6 +24,78 @@ SECTION_HEADER_ALIASES = {
     "certificates": "certifications",
 }
 
+SKILL_SIGNAL_MAP = {
+    "python": r"\bpython\b",
+    "java": r"\bjava\b",
+    "javascript": r"\bjavascript\b",
+    "typescript": r"\btypescript\b",
+    "react": r"\breact\b",
+    "node": r"\bnode(?:\.js|js)?\b",
+    "express": r"\bexpress(?:\.js|js)?\b",
+    "spring": r"\bspring(?:\s+boot)?\b",
+    "django": r"\bdjango\b",
+    "flask": r"\bflask\b",
+    "fastapi": r"\bfastapi\b",
+    "sql": r"\bsql\b",
+    "postgresql": r"\bpostgresql\b",
+    "mysql": r"\bmysql\b",
+    "mongodb": r"\bmongodb\b",
+    "redis": r"\bredis\b",
+    "kafka": r"\bkafka\b",
+    "docker": r"\bdocker\b",
+    "kubernetes": r"\bkubernetes\b",
+    "terraform": r"\bterraform\b",
+    "jenkins": r"\bjenkins\b",
+    "git": r"\bgit\b",
+    "aws": r"\baws\b",
+    "azure": r"\bazure\b",
+    "gcp": r"\bgcp\b",
+    "ci/cd": r"\bci/cd\b",
+    "power bi": r"\bpower\s*bi\b",
+    "tableau": r"\btableau\b",
+    "scikit-learn": r"\bscikit-?learn\b",
+    "pandas": r"\bpandas\b",
+    "numpy": r"\bnumpy\b",
+    "tensorflow": r"\btensorflow\b",
+    "pytorch": r"\bpytorch\b",
+    "figma": r"\bfigma\b",
+    "selenium": r"\bselenium\b",
+    "kotlin": r"\bkotlin\b",
+    "swift": r"\bswift\b",
+    "swiftui": r"\bswiftui\b",
+    "uikit": r"\buikit\b",
+    "android": r"\bandroid\b",
+    "ruby": r"\bruby\b",
+    "rails": r"\brails\b",
+    "rspec": r"\brspec\b",
+    "php": r"\bphp\b",
+    "laravel": r"\blaravel\b",
+    "symfony": r"\bsymfony\b",
+    "go": r"\bgo(lang)?\b",
+    "grpc": r"\bgrpc\b",
+    "gin": r"\bgin\b",
+    "gorm": r"\bgorm\b",
+    "c++": r"\bc\+\+\b|\bcpp\b",
+    "c": r"\bc\b",
+    "dotnet": r"\b\.net\b|\bdotnet\b",
+    "asp.net": r"\basp\.?net\b",
+    "entity framework": r"\bentity framework\b|\bef core\b",
+}
+
+HEADER_HINTS = {
+    "summary": {"summary", "profile", "objective"},
+    "skills": {"skills", "technologies", "tech stack", "core competencies", "competencies"},
+    "experience": {"experience", "employment", "work history", "professional experience"},
+    "projects": {"projects", "project experience", "case studies"},
+    "education": {"education", "academic", "qualification"},
+    "certifications": {"certifications", "certificates", "licenses"},
+}
+
+CERTIFICATION_KEYWORDS = [
+    "aws certified", "azure certified", "google cloud", "gcp", "cka", "ckad", "terraform associate",
+    "pmp", "scrum master", "istqb", "comptia", "security+", "cissp", "ceh",
+]
+
 
 def normalize_text(text: str) -> str:
     text = text.replace("\r\n", "\n").replace("\r", "\n")
@@ -71,6 +143,7 @@ def extract_text_from_docx(filepath: str) -> str:
 
 def _normalize_header_candidate(line: str) -> str:
     line = line.strip().lower()
+    line = re.sub(r"^[^a-z0-9]+|[^a-z0-9]+$", "", line)
     line = re.sub(r"[:\-]+$", "", line).strip()
     line = re.sub(r"\s+", " ", line)
     return line
@@ -78,7 +151,53 @@ def _normalize_header_candidate(line: str) -> str:
 
 def _detect_section_header(line: str) -> str:
     candidate = _normalize_header_candidate(line)
-    return SECTION_HEADER_ALIASES.get(candidate, "")
+    if candidate in SECTION_HEADER_ALIASES:
+        return SECTION_HEADER_ALIASES[candidate]
+
+    for section, hints in HEADER_HINTS.items():
+        if candidate in hints:
+            return section
+        if any(hint in candidate for hint in hints):
+            return section
+
+    return ""
+
+
+def _looks_like_header(line: str) -> bool:
+    clean = line.strip()
+    if not clean:
+        return False
+
+    alnum = re.sub(r"[^A-Za-z0-9 ]", "", clean)
+    words = [w for w in alnum.split() if w]
+    if not words or len(words) > 6:
+        return False
+
+    if _detect_section_header(clean):
+        return True
+
+    if clean.isupper() and 1 <= len(words) <= 4:
+        return True
+
+    # Title-like short line is a likely heading.
+    title_like = sum(1 for w in words if w[:1].isupper())
+    if title_like >= max(1, len(words) - 1) and len(words) <= 4:
+        return True
+
+    return False
+
+
+def _infer_section_from_line(line: str) -> str:
+    l = line.lower()
+    if re.search(r"\b(b\.?(tech|e)|m\.?(tech|e|s|ba)|bsc|msc|bachelor|master|university|college|cgpa|gpa)\b", l):
+        return "education"
+    if re.search(r"\b(intern|engineer|developer|manager|analyst|architect|consultant)\b", l):
+        return "experience"
+    if re.search(r"\b(project|built|developed|implemented|deployed|designed)\b", l):
+        return "projects"
+    if re.search(r"\b(certified|certification|aws certified|azure certified|scrum|pmp)\b", l):
+        return "certifications"
+    return ""
 
 def split_sections(text: str) -> dict:
     lines = text.splitlines()
@@ -96,6 +215,19 @@ def split_sections(text: str) -> dict:
             current = detected_header
             sections.setdefault(current, [])
             continue
+
+        if _looks_like_header(clean):
+            possible = _detect_section_header(clean)
+            if possible:
+                current = possible
+                sections.setdefault(current, [])
+                continue
+
+        if current == "other":
+            inferred = _infer_section_from_line(clean)
+            if inferred:
+                current = inferred
+                sections.setdefault(current, [])
 
         sections.setdefault(current, []).append(clean)
 
@@ -143,6 +275,48 @@ def extract_skills(skills_text: str) -> list:
 
     return sorted(cleaned)
 
+
+def extract_skills_from_full_text(full_text: str) -> list:
+    normalized = full_text.lower()
+    found = set()
+    for skill, pattern in SKILL_SIGNAL_MAP.items():
+        if re.search(pattern, normalized):
+            found.add(skill)
+    return sorted(found)
+
+
+def extract_profile_signals(full_text: str, sections: dict) -> dict:
+    text = full_text.lower()
+    cert_section = sections.get("certifications", "").lower()
+    projects_section = sections.get("projects", "").lower()
+    experience_section = sections.get("experience", "").lower()
+
+    cert_hits = 0
+    for keyword in CERTIFICATION_KEYWORDS:
+        cert_hits += len(re.findall(re.escape(keyword), text))
+
+    # Links found in project/experience sections usually indicate portfolio/project evidence.
+    project_links = len(re.findall(r"https?://", projects_section)) + len(re.findall(r"github\.com", projects_section))
+    experience_links = len(re.findall(r"https?://", experience_section)) + len(re.findall(r"github\.com", experience_section))
+
+    quantified_impact = bool(re.search(r"\b\d+(?:\.\d+)?%\b|\b(increased|reduced|improved)\b", text))
+
+    return {
+        "github": bool(re.search(r"github\.com|\bgithub\b", text)),
+        "linkedin": bool(re.search(r"linkedin\.com|\blinkedin\b", text)),
+        "portfolio": bool(re.search(r"\bportfolio\b|behance\.net|dribbble\.com|medium\.com|personal website", text)),
+        "kaggle": bool(re.search(r"kaggle\.com|\bkaggle\b", text)),
+        "huggingface": bool(re.search(r"huggingface\.co|\bhugging face\b", text)),
+        "figma_link": bool(re.search(r"figma\.com|\bfigma\b", text)),
+        "behance": bool(re.search(r"behance\.net|\bbehance\b", text)),
+        "dribbble": bool(re.search(r"dribbble\.com|\bdribbble\b", text)),
+        "certifications_count": cert_hits + (1 if cert_section.strip() else 0),
+        "project_links_count": project_links,
+        "experience_links_count": experience_links,
+        "project_mentions": len(re.findall(r"\b(project|case study|product)\b", projects_section or text)),
+        "has_quantified_impact": quantified_impact,
+    }
+
 def parse_resume(filepath: str) -> dict:
     ext = os.path.splitext(filepath)[1].lower()
     if ext == ".pdf":
@@ -157,12 +331,25 @@ def parse_resume(filepath: str) -> dict:
     sections = split_sections(full_text)
 
     name = extract_name(full_text)
-    skills_text = sections.get("skills", "")
-    skills = extract_skills(skills_text)
+    skills_sources = [
+        sections.get("skills", ""),
+        sections.get("summary", ""),
+        sections.get("experience", ""),
+        sections.get("projects", ""),
+    ]
+    merged_skill_text = "\n".join([s for s in skills_sources if s])
+    skills = set(extract_skills(merged_skill_text))
+    skills.update(extract_skills_from_full_text(full_text))
+
+    if not sections.get("skills") and skills:
+        sections["skills"] = ", ".join(sorted(skills))
+
+    profile_signals = extract_profile_signals(full_text, sections)
 
     return {
         "name": name,
         "full_text": full_text,
         "sections": sections,
-        "skills": skills,
+        "skills": sorted(skills),
+        "profile_signals": profile_signals,
     }

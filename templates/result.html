@@ -95,7 +95,7 @@
     <div class="metric-card">
       <h4>🔑 Keywords</h4>
       <p class="metric-value">{{ keyword_match.coverage | round(1) }}%</p>
-      <p class="metric-desc">Required: {{ keyword_match.required_coverage | round(1) }}%</p>
+      <p class="metric-desc">Required + Conditions: {{ keyword_match.required_coverage | round(1) }}%</p>
     </div>
     <div class="metric-card">
       <h4>✅ Completeness</h4>
@@ -121,8 +121,8 @@
 
   <!-- Detailed Analysis Grid -->
   <h3 style="margin-top: 2.5rem; margin-bottom: 1.5rem; text-align: center;">🔍 Detailed Analysis</h3>
-  <div class="grid-2">
-    <div class="panel">
+  <div class="grid-2 analysis-grid">
+    <div class="panel panel-keywords">
       <h3>🔑 Keyword Analysis</h3>
       <div class="skill-section">
         <h4>✅ Required Skills Present ({{ keyword_match.required_present | length }})</h4>
@@ -171,9 +171,34 @@
           {% endif %}
         </div>
       </div>
+
+      <div class="skill-section">
+        <h4>🧩 Conditional Role Checks</h4>
+        <p class="metric-desc" style="margin-bottom: 0.75rem;">
+          Detected backend language: {{ keyword_match.inferred_backend_language | replace('_', ' ') | title }}
+        </p>
+        <div class="skill-tags">
+          {% if keyword_match.condition_present %}
+            {% for item in keyword_match.condition_present %}
+            <span class="skill-tag success">{{ item }}</span>
+            {% endfor %}
+          {% endif %}
+
+          {% if keyword_match.condition_missing %}
+            {% for item in keyword_match.condition_missing %}
+            <span class="skill-tag danger">{{ item }}</span>
+            {% endfor %}
+          {% endif %}
+
+          {% if not keyword_match.condition_present and not keyword_match.condition_missing %}
+            <span class="text-muted">No conditional requirements for this role.</span>
+          {% endif %}
+        </div>
+      </div>
+
     </div>
 
-    <div class="panel">
+    <div class="panel panel-formatting">
       <h3>📋 Formatting & Content</h3>
       <div class="metric-row">
         <span>📏 Length Score</span>
@@ -187,22 +212,79 @@
         <span>💬 Action Verbs Quality</span>
         <span class="metric-badge">{{ action_verb_score }}/100</span>
       </div>
-      
       <h4 style="margin-top: 1.5rem;">✓ Sections Present</h4>
+      {% if section_info.present %}
       <ul class="section-list">
         {% for section in section_info.present %}
-        <li>✓ {{ section | title }}</li>
+        {% set quality_pct = (section_info.quality_scores.get(section, 0) * 100) | round(0) %}
+        {% if quality_pct >= 85 %}
+          {% set quality_label = "High" %}
+          {% set quality_class = "high" %}
+        {% elif quality_pct >= 65 %}
+          {% set quality_label = "Medium" %}
+          {% set quality_class = "medium" %}
+        {% else %}
+          {% set quality_label = "Low" %}
+          {% set quality_class = "low" %}
+        {% endif %}
+        <li>
+          <div class="section-line">
+            <span>✓ {{ section | title }}</span>
+            <span class="section-quality-badge {{ quality_class }}">{{ quality_label }}</span>
+          </div>
+          <div class="metric-desc" style="margin-top: 0.35rem; margin-left: 1.2rem;">
+            Words: {{ section_info.word_counts.get(section, 0) }} |
+            Quality: {{ quality_pct }}%
+          </div>
+          <div class="metric-desc" style="margin-top: 0.15rem; margin-left: 1.2rem;">
+            {{ section_info.section_feedback.get(section, "Looks good") }}
+          </div>
+        </li>
         {% endfor %}
       </ul>
+      {% else %}
+      <p class="metric-desc" style="margin-top: 0.75rem;">
+        No major sections detected yet. Add clear headings like Skills, Experience, Projects, and Education.
+      </p>
+      {% endif %}
 
       {% if section_info.missing %}
       <h4 style="margin-top: 1.5rem;">✗ Missing Sections</h4>
       <ul class="section-list missing">
         {% for section in section_info.missing %}
-        <li>✗ {{ section | title }}</li>
+        <li>{{ section | title }}</li>
         {% endfor %}
       </ul>
       {% endif %}
+
+      <div class="ats-friendly-card">
+        <div class="ats-friendly-header">
+          <h4>🤖 ATS-Friendly Format</h4>
+          <span class="metric-badge">{{ ats_friendliness_score }}/100</span>
+        </div>
+        <div class="ats-breakdown-grid">
+          <div class="ats-breakdown-item">
+            <span>Headings Structure</span>
+            <strong>{{ ats_friendliness_breakdown.heading_structure }}%</strong>
+          </div>
+          <div class="ats-breakdown-item">
+            <span>Contact Readability</span>
+            <strong>{{ ats_friendliness_breakdown.contact_readability }}%</strong>
+          </div>
+          <div class="ats-breakdown-item">
+            <span>Bullet Structure</span>
+            <strong>{{ ats_friendliness_breakdown.bullet_structure }}%</strong>
+          </div>
+          <div class="ats-breakdown-item">
+            <span>Layout Safety</span>
+            <strong>{{ ats_friendliness_breakdown.table_density }}%</strong>
+          </div>
+          <div class="ats-breakdown-item">
+            <span>Line Readability</span>
+            <strong>{{ ats_friendliness_breakdown.line_readability }}%</strong>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -18,10 +18,17 @@
     <label for="role">🎓 Select Your Target Role</label>
     <select id="role" name="role" required>
       <option value="">-- Choose your target role --</option>
-      {% for r in roles %}
-      <option value="{{ r }}">{{ r }}</option>
+      {% for group in role_groups %}
+      <optgroup label="{{ group.category }}">
+        {% for r in group.roles %}
+        <option value="{{ r }}">{{ r }}</option>
+        {% endfor %}
+      </optgroup>
       {% endfor %}
     </select>
+    <small style="display: block; margin-top: 0.5rem; color: var(--muted);">
+      Roles are grouped by domain: Engineering, Data, QA, Infra, Product/Design.
+    </small>
 
     <label for="resume">📄 Upload Your Resume (PDF or DOCX)</label>
     <div id="dropZone" class="drop-zone">

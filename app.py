@@ -25,6 +25,85 @@ REPORT_CACHE_TTL_MINUTES = 30
 report_cache = OrderedDict()
 report_token_serializer = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
+ROLE_DROPDOWN_GROUPS = [
+    (
+        "Engineering",
+        [
+            "Software Engineer",
+            "C++ Developer",
+            "C Developer",
+            "Ruby Developer",
+            "Full Stack Developer",
+            "Python Fullstack Developer",
+            "Java Full-Stack Developer",
+            "Frontend Developer",
+            "Backend Developer",
+            "Web Developer",
+            "MERN Stack Developer",
+            "Python Developer",
+            "Java Developer",
+            ".NET Developer",
+            "PHP Developer",
+            "Go Developer",
+        ],
+    ),
+    (
+        "Data",
+        [
+            "Data Analyst",
+            "Data Scientist",
+            "ML Engineer",
+        ],
+    ),
+    (
+        "QA",
+        [
+            "QA Engineer",
+            "Software Tester",
+            "Automation Test Engineer",
+        ],
+    ),
+    (
+        "Infra",
+        [
+            "Android Developer",
+            "iOS Developer",
+            "DevOps Engineer",
+            "Cloud Engineer",
+            "System Administrator",
+            "Network Engineer",
+            "Database Administrator",
+            "Cybersecurity Analyst",
+        ],
+    ),
+    (
+        "Product/Design",
+        [
+            "Business Analyst",
+            "Product Manager",
+            "UI/UX Designer",
+        ],
+    ),
+]
+
+
+def _build_role_groups() -> list:
+    available_labels = {role["label"] for role in ROLE_CONFIG.values()}
+    grouped = []
+    used_labels = set()
+
+    for category, labels in ROLE_DROPDOWN_GROUPS:
+        filtered_labels = [label for label in labels if label in available_labels]
+        if filtered_labels:
+            grouped.append({"category": category, "roles": filtered_labels})
+            used_labels.update(filtered_labels)
+
+    leftovers = sorted(available_labels - used_labels)
+    if leftovers:
+        grouped.append({"category": "Other", "roles": leftovers})
+
+    return grouped
+
 
 def _cleanup_expired_reports() -> None:
     now = datetime.utcnow()
@@ -64,6 +143,10 @@ def _build_report_data(role_label: str, parsed: dict, ats_details: dict, feedbac
         "action_verb_score": ats_details["action_verb_score"],
         "technical_depth_score": ats_details["technical_depth_score"],
         "consistency_score": ats_details["consistency_score"],
+        "ats_friendliness_score": ats_details["ats_friendliness_score"],
+        "ats_friendliness_breakdown": ats_details["ats_friendliness_breakdown"],
+        "role_signal_score": ats_details["role_signal_score"],
+        "role_signal_analysis": ats_details["role_signal_analysis"],
         "experience_level": ats_details["experience_level"],
         "strong_areas": feedback["strong_areas"],
         "weak_points": feedback["weak_points"],
@@ -89,8 +172,8 @@ def _read_report_token(token: str, max_age_seconds: int) -> Optional[dict]:
 
 @app.route("/", methods=["GET"])
 def home():
-    roles = [role["label"] for role in ROLE_CONFIG.values()]
-    return render_template("index.html", roles=roles)
+    role_groups = _build_role_groups()
+    return render_template("index.html", role_groups=role_groups)
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
@@ -142,6 +225,10 @@ def analyze():
             action_verb_score=ats_details["action_verb_score"],
             technical_depth_score=ats_details["technical_depth_score"],
             consistency_score=ats_details["consistency_score"],
+            ats_friendliness_score=ats_details["ats_friendliness_score"],
+            ats_friendliness_breakdown=ats_details["ats_friendliness_breakdown"],
+            role_signal_score=ats_details["role_signal_score"],
+            role_signal_analysis=ats_details["role_signal_analysis"],
             experience_level=ats_details["experience_level"],
             strong_areas=feedback["strong_areas"],
             weak_points=feedback["weak_points"],
