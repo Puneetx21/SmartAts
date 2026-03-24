@@ -1,29 +1,115 @@
-# SmartATS — Logic-Based Resume ATS Analyzer
+# SmartATS - Rule-Based Resume ATS Analyzer
 
-SmartATS is a Flask web app that analyzes PDF resumes against role-specific ATS criteria and generates actionable feedback **without any external AI/API calls**.
+SmartATS is a Flask web app that analyzes resumes against role-specific ATS criteria and generates actionable feedback without external AI/API calls.
 
-It is fully local, rule-based, and supports **PDF export of the analysis report**.😊
-## 🛠 Built With
+The analyzer is fully local, rule-based, and supports downloadable PDF reports.
 
-- 🐍 **Python 3.8+**
-- 🌐 **Flask**
-- 📄 **PyMuPDF (Resume Text Extraction)**
-- 🧾 **ReportLab (PDF Report Generation)**
+## What Changed Recently
 
-## Project Overview 
-<img width="1347" height="863" alt="image" src="https://github.com/user-attachments/assets/e88b6256-0044-4871-973a-7c49b5c45c68" />
+Major updates were added to improve scoring quality, role coverage, and resume parsing reliability:
 
-## Features
+- Improved scoring logic with role-aware weighted components
+- Smoother keyword coverage scoring for long skill lists
+- Role condition support (for example, "at least one backend language")
+- New ATS-friendliness sub-score with detailed breakdown
+- Role-signal scoring for portfolio/profile/impact evidence
+- Developer calibration bonus for strong technical resumes
+- Expanded role catalog with grouped role selector in UI
+- Added DOCX resume support in addition to PDF
+- Improved parsing of section aliases and technical skill variants
+- Improved report download handling and serverless-safe cleanup
+- Upgraded PDF report to A4-based professional layout with visual hierarchy
+- Added footer with generation timestamp and page number on every page
+- Converted Keyword Analysis to text-based bullets with adaptive 2-column layout
+- Ensured full Prioritized Suggestions, Strong Areas, and Resume Format Best Practices are included in report output
 
-- ATS score calculation (0–100)
-- Role-based keyword matching (required + nice-to-have)
-- Section completeness checks
-- Action-verb quality scoring
+## Built With
+
+- Python 3.8+
+- Flask
+- PyMuPDF (PDF extraction)
+- python-docx (DOCX extraction)
+- ReportLab (PDF report generation)
+
+## Core Features
+
+- ATS score calculation (0-100)
+- Role-based keyword matching:
+  - Required skills
+  - Nice-to-have skills
+  - Conditional skill groups
+- Section completeness and section depth checks
+- Action verb and writing impact analysis
 - Technical depth and consistency scoring
-- Experience-level detection
-- Prioritized improvement suggestions
-- Responsive UI with dark/light theme
+- ATS-friendliness analysis (heading/contact/bullets/readability)
+- Experience-level inference (entry, junior, mid, senior)
+- Role-signal analysis (GitHub, LinkedIn, portfolio, certifications, project links)
+- Prioritized, role-aware improvement suggestions
 - Downloadable analysis report in PDF format
+- A4 professional report style with color-coded sections and clear typography hierarchy
+
+## Scoring Model
+
+SmartATS calculates the final score using weighted components from `services/ats_engine.py`:
+
+- `keyword`
+- `sections`
+- `action_verbs`
+- `technical_depth`
+- `consistency`
+- `length`
+- `formatting`
+- `role_signals`
+- `ats_friendliness`
+
+Default scoring weights:
+
+```txt
+keyword:         0.43
+sections:        0.19
+action_verbs:    0.10
+technical_depth: 0.08
+consistency:     0.07
+length:          0.04
+formatting:      0.03
+role_signals:    0.01
+ats_friendliness:0.05
+```
+
+Some roles (for example `mern_developer`, `data_scientist`, `ui_ux_designer`) use custom weights.
+
+## Supported Roles
+
+The project currently includes 33 role configurations across engineering, data, QA, infrastructure, and product/design domains.
+
+Examples include:
+
+- Software Engineer
+- Full Stack Developer
+- Frontend Developer
+- Backend Developer
+- MERN Stack Developer
+- Python Developer
+- Java Developer
+- C++ Developer
+- C Developer
+- Ruby Developer
+- .NET Developer
+- PHP Developer
+- Go Developer
+- Data Analyst
+- Data Scientist
+- ML Engineer
+- QA Engineer
+- Automation Test Engineer
+- DevOps Engineer
+- Cloud Engineer
+- Android Developer
+- iOS Developer
+- UI/UX Designer
+- Product Manager
+
+Complete role definitions and skill requirements are maintained in `config.py` under `ROLE_CONFIG`.
 
 ## Installation
 
@@ -35,140 +121,144 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Open: `http://localhost:5000`
+Open: http://localhost:5000
 
-## Quick Start (New User)
+## Quick Start
 
-1. Open the project folder.
-2. Create and activate virtual environment:
-  - Windows PowerShell: `.venv\Scripts\activate`
-3. Install packages: `pip install -r requirements.txt`
-4. Run app: `python app.py`
-5. Open `http://localhost:5000`
-6. Select role → upload PDF resume → view analysis → download PDF report
+1. Create and activate a virtual environment.
+2. Install dependencies with `pip install -r requirements.txt`.
+3. Start the app with `python app.py`.
+4. Open the app in the browser.
+5. Select target role.
+6. Upload resume file (`.pdf` or `.docx`).
+7. Review analysis and download the PDF report.
 
-## Requirements
-
-Current minimal dependencies:
+## Dependencies
 
 ```txt
 Flask>=2.3.0
-pymupdf>=1.23.0
+pymupdf==1.23.26
 reportlab>=4.0.0
+python-docx>=1.1.2
 ```
 
-## No `.env` Needed
+## No .env Required
 
-This project is fully logic-based and **does not require `.env`**.
+This project does not require `.env` for scoring logic.
 
 - No API keys
-- No OpenAI/third-party AI integrations
-- No cloud/network dependency for scoring logic
-
-If a `.env` file exists locally, the app ignores it (safe to keep or delete).
+- No third-party AI service integration
+- No network dependency for ATS evaluation
 
 ## How It Works
 
-1. User selects a target role.
-2. User uploads a PDF resume.
-3. Resume parser extracts text and structured information.
-4. ATS engine computes score + sub-metrics.
-5. Feedback generator creates role-aware suggestions.
-6. Results page shows detailed analysis.
-7. User can download a PDF report from the result page.
+1. User selects a role.
+2. User uploads a PDF or DOCX resume.
+3. Parser extracts normalized text, sections, skills, and profile signals.
+4. ATS engine computes weighted scoring metrics.
+5. Feedback generator creates role-specific strengths, weak points, and actions.
+6. Result page displays full analysis.
+7. User downloads PDF report using report id/token flow.
 
 ## Project Structure
 
 ```txt
 smartats/
-├── app.py
-├── config.py
-├── requirements.txt
-├── README.md
-│
-├── services/
-│   ├── ats_engine.py
-│   ├── feedback_generator.py
-│   ├── parser.py
-│   ├── report_pdf.py
-│   ├── utils.py
-│   └── __init__.py
-│
-├── templates/
-│   ├── base.html
-│   ├── index.html
-│   └── result.html
-│
-├── static/
-│   ├── css/
-│   │   ├── style.css
-│   │   └── circular-progress.css
-│   └── js/
-│       └── main.js
-│
-└── uploads/
-    └── logs/
+|-- app.py
+|-- config.py
+|-- requirements.txt
+|-- README.md
+|-- vercel.json
+|
+|-- api/
+|   |-- index.py
+|
+|-- services/
+|   |-- ats_engine.py
+|   |-- feedback_generator.py
+|   |-- parser.py
+|   |-- report_pdf.py
+|   |-- utils.py
+|   |-- __init__.py
+|
+|-- templates/
+|   |-- base.html
+|   |-- index.html
+|   |-- result.html
+|
+|-- static/
+|   |-- css/
+|   |   |-- style.css
+|   |   |-- circular-progress.css
+|   |-- js/
+|       |-- main.js
+|
+|-- uploads/
+    |-- logs/
 ```
 
 ## Main Modules
 
-- `app.py`: Flask routes, analysis flow, and report-download endpoint
-- `services/parser.py`: PDF resume parsing
-- `services/ats_engine.py`: scoring engine and ATS metrics
-- `services/feedback_generator.py`: rule-based feedback logic
-- `services/report_pdf.py`: PDF report builder
-- `config.py`: role configurations and upload settings
+- `app.py`: routes, role grouping, analysis flow, report cache, tokenized report fallback
+- `services/parser.py`: PDF/DOCX parsing, section detection, skill extraction, profile signal extraction
+- `services/ats_engine.py`: complete scoring engine and weighted score assembly
+- `services/feedback_generator.py`: role-aware feedback and prioritized suggestions
+- `services/report_pdf.py`: PDF report generation
+- `config.py`: upload config and complete role/skill configuration
 
 ## Report Download
 
-- Result page includes **Download PDF Report** button
+- Result page provides a Download PDF Report action.
 - Endpoint: `/download-report/<report_id>`
-- Report cache is in-memory with:
-  - max 100 reports
-  - 30-minute expiry cleanup
+- Uses in-memory cache and signed token fallback.
+- Cache policy:
+  - Max 100 report objects
+  - TTL 30 minutes with periodic cleanup
 
-## Notes
+## PDF Report Layout
 
-- Uploaded resumes are stored in `uploads/`.
-- Keep uploads/logs out of version control as needed.
-- For production, set `debug=False` and run behind a proper WSGI server.
+- Page size: A4
+- Footer: left side shows report generation date/time, right side shows page number
+- Header hierarchy:
+  - Main headers: bold + underlined
+  - Subheaders: bold
+  - Content: regular body text
+- Keyword Analysis rendering:
+  - Text-only bullet format (no tables)
+  - Uses 2-column bullets only when a list has 3 or more items
+- Content inclusion:
+  - Strong Areas: full list included
+  - Prioritized Suggestions: full list included
+  - Resume Format Best Practices: full list included
 
-## 🚀 Deployment to Vercel
+## Deployment (Vercel)
 
-SmartATS is fully compatible with Vercel's serverless platform:
+SmartATS is configured for Vercel serverless deployment:
 
-### Quick Deploy
+- `vercel.json` routes traffic to Python app
+- `api/index.py` provides serverless entry point
+- Uploads use `/tmp/uploads` for serverless-safe writes
+- Uploaded files are deleted after processing
+- PDF reports are generated in memory
+
+Quick deploy:
+
 ```bash
-# Install Vercel CLI
 npm install -g vercel
-
-# Deploy
 vercel --prod
 ```
 
-### What's Vercel-Ready?
-✅ **In-memory PDF generation** - No file writes needed  
-✅ **Automatic file cleanup** - Uploads deleted after processing  
-✅ **Serverless configuration** - `vercel.json` included  
-✅ **/tmp storage** - Compatible with Vercel's ephemeral filesystem  
+Deployment steps and troubleshooting are documented in this README.
 
-### Important Notes for Vercel:
-- PDF downloads work via in-memory BytesIO (no disk writes)
-- Report cache is per-instance (acceptable for this use case)
-- Uploaded files auto-deleted after parsing to save /tmp space
-- Free tier supports ~1,200 analyses/month
+## Live App
 
-**For detailed deployment instructions, troubleshooting, and optimization tips, see [DEPLOYMENT.md](DEPLOYMENT.md)**
-
-## 🌐 Live Deployment
-
-The application is deployed and publicly accessible using **Vercel**.
-
-🚀 **Try it here:**  
-👉 https://smart-ats-three.vercel.app
+https://smart-ats-three.vercel.app
 
 ## Troubleshooting
 
-- If activation is blocked in PowerShell, run: `Set-ExecutionPolicy -Scope Process Bypass`
-- If install fails, upgrade pip first: `python -m pip install --upgrade pip`
-- If PDF parsing fails for a resume, re-export the resume as a standard text-based PDF and retry
+- PowerShell activation blocked:
+  - `Set-ExecutionPolicy -Scope Process Bypass`
+- Package install issues:
+  - `python -m pip install --upgrade pip`
+- Parsing issues with scanned/image PDFs:
+  - Re-export as a text-based PDF or use DOCX
